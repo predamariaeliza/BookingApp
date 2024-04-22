@@ -16,7 +16,7 @@ namespace BookingAppWeb.Controllers
         public IActionResult Index()
         {
             var properties = _dbContext.Properties.ToList();
-            return View();
+            return View(properties);
         }
     }
 }
