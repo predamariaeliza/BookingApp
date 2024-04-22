@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using BookingApp.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Data
 {
@@ -9,5 +10,6 @@ namespace BookingApp.Infrastructure.Data
             
         }
 
+        public DbSet<Property> Properties { get; set; }
     }
 }
