@@ -1,7 +1,30 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<BookingApp.Domain.Entities.Property>
 
 <h1>Index page for Property</h1>
+
+<table class="table tabletable-bordered table-striped">
+    <thead>
+        @* Numele coloanelor din tabel*@
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>SquareMeters</th>
+            <th>Occupancy</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @* @ -> Razor syntax -> putem adauga cod c#  *@
+        @* var obj -> din modelul de la linia 1  *@
+        @foreach(var obj in Model)
+        {
+            <tr>
+                <td>@obj.Name</td>
+                <td>@obj.Price</td>
+                <td>@obj.SquareMeters</td>
+                <td>@obj.Occupancy</td>
+            </tr>
+        }
+    </tbody>
+
+</table>
