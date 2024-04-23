@@ -1,21 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BookingApp.Domain.Entities
 {
     public class Property
     {
         public int Id { get; set; }
+
         public required string Name { get; set; }
+
         public string? Description { get; set; }
+
+        [Display(Name = "Price per night")]
         public double Price { get; set; }
+
         public double SquareMeters { get; set; }
+
         public double Occupancy { get; set; }
+
+        [Display(Name ="Image Url")]
         public string? ImageUrl { get; set; }
+
         public DateTime? CreatedDate { get; set; }
+
         public DateTime? UpdatedDate { get; set; }
     }
 }

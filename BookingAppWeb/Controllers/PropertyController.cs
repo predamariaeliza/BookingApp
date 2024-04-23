@@ -1,4 +1,5 @@
-﻿using BookingApp.Infrastructure.Data;
+﻿using BookingApp.Domain.Entities;
+using BookingApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingAppWeb.Controllers
@@ -21,8 +22,16 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Create()
         {
-            //var property = _dbContext.Properties.Where(p => p.Name == name);
             return View();
+        }
+
+        [HttpPost()]
+        public IActionResult Create(Property property)
+        {
+            _dbContext.Properties.Add(property);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction("Index","Property");
         }
     }
 }
