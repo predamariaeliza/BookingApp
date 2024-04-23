@@ -18,7 +18,7 @@
             <div class="p-3">
 
                 @* ASP validations - ModelState from controllers*@
-                <div asp-validation-summary="ModelOnly"></div>
+                <div asp-validation-summary="All"></div>
 
                 <div class="form-floating py-2 col-12">
                     <input asp-for="@Model.Name" class="form-control border shadow"/>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="form-floating py-2 col-12">
                     <input asp-for="@Model.SquareMeters" class="form-control border shadow" />
-                    <label asp-for="SquareMeters" class="ms-2">Shttps://localhost:7171/quareMeters</label>
+                    <label asp-for="SquareMeters" class="ms-2">SquareMeters</label>
                     <span asp-validation-for="SquareMeters" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">

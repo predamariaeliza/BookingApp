@@ -15,7 +15,6 @@ namespace BookingApp.Domain.Entities
         [Display(Name = "Price per night")]
         public double Price { get; set; }
 
-        [MinLength(10)]
         public double SquareMeters { get; set; }
 
         [Range(1,10)]
