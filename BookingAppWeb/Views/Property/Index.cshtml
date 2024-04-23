@@ -1,0 +1,49 @@
+﻿@model IEnumerable<BookingApp.Domain.Entities.Property>
+
+<div class="w-100 card border-0 p-4">
+    <div class="card-header bg-success bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class"text-white py-2">List of Properties</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body border p-4">
+        <div class="row pb-3">
+            <div class="col-6 offset-6 text-end">
+                <a asp-controller="Property" asp-action="Create" class="btn btn-secondary">
+                    <i class="bi bi-plus-circle"></i> Create new property
+                </a>
+            </div>
+        </div>
+
+        <table class="table tabletable-bordered table-striped">
+            <thead>
+                @* Numele coloanelor din tabel*@
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>SquareMeters</th>
+                    <th>Occupancy</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @* @ -> Razor syntax -> putem adauga cod c#  *@
+                @* var obj -> din modelul de la linia 1  *@
+                @foreach (var obj in Model)
+                {
+                    <tr>
+                        <td>@obj.Name</td>
+                        <td>@obj.Price</td>
+                        <td>@obj.SquareMeters</td>
+                        <td>@obj.Occupancy</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
