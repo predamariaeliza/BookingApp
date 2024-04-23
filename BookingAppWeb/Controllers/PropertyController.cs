@@ -18,5 +18,11 @@ namespace BookingAppWeb.Controllers
             var properties = _dbContext.Properties.ToList();
             return View(properties);
         }
+
+        public IActionResult Create()
+        {
+            var properties = _dbContext.Properties.ToList();
+            return View(properties);
+        }
     }
 }
