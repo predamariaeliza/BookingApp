@@ -16,7 +16,10 @@
         <form method="post" class="row">
 
             <div class="p-3">
-                
+
+                @* ASP validations - ModelState from controllers*@
+                <div asp-validation-summary="ModelOnly"></div>
+
                 <div class="form-floating py-2 col-12">
                     <input asp-for="@Model.Name" class="form-control border shadow"/>
                     <label asp-for="Name" class="ms-2">Name</label>
@@ -72,3 +75,10 @@
     </div>
 
 </div>
+
+@* added javascript document reference*@
+@section Scripts{
+@{
+    <partial name="_ValidationScriptsPartial"/>
+}
+}

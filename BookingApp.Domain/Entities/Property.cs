@@ -6,6 +6,7 @@ namespace BookingApp.Domain.Entities
     {
         public int Id { get; set; }
 
+        [MaxLength(100)]
         public required string Name { get; set; }
 
         public string? Description { get; set; }
@@ -13,8 +14,10 @@ namespace BookingApp.Domain.Entities
         [Display(Name = "Price per night")]
         public double Price { get; set; }
 
+        [MinLength(10)]
         public double SquareMeters { get; set; }
 
+        [Range(1,10)]
         public double Occupancy { get; set; }
 
         [Display(Name ="Image Url")]

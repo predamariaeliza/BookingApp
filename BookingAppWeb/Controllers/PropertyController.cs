@@ -8,7 +8,6 @@ namespace BookingAppWeb.Controllers
     public class PropertyController : Controller
     {
         private readonly DataContext _dbContext;
-
         public PropertyController(DataContext dbContext)
         {
             _dbContext = dbContext;
@@ -28,6 +27,11 @@ namespace BookingAppWeb.Controllers
         [HttpPost()]
         public IActionResult Create(Property property)
         {
+            if(property.Name == property.Description)
+            {
+                ModelState.AddModelError("name", "The Description cannot match the Name");
+            }
+
             if(ModelState.IsValid)
             {
                 _dbContext.Properties.Add(property);
