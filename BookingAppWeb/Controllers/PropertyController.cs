@@ -28,10 +28,13 @@ namespace BookingAppWeb.Controllers
         [HttpPost()]
         public IActionResult Create(Property property)
         {
-            _dbContext.Properties.Add(property);
-            _dbContext.SaveChanges();
-
-            return RedirectToAction("Index","Property");
+            if(ModelState.IsValid)
+            {
+                _dbContext.Properties.Add(property);
+                _dbContext.SaveChanges();
+                return RedirectToAction("Index", "Property");
+            }
+            return View();
         }
     }
 }
