@@ -21,8 +21,8 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Create()
         {
-            var properties = _dbContext.Properties.ToList();
-            return View(properties);
+            //var property = _dbContext.Properties.Where(p => p.Name == name);
+            return View();
         }
     }
 }
