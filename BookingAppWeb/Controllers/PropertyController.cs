@@ -41,19 +41,6 @@ namespace BookingAppWeb.Controllers
             return View();
         }
 
-        //[HttpPut()]
-        public IActionResult Update(int propertyId) 
-        {
-            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
-
-            var properties = _dbContext.Properties.Where(p => p.Price > 50 && p.Occupancy > 0);
-            if(propertyToUpdate == null) 
-            {
-                return RedirectToAction("Error", "Home");
-            }
-            return View(propertyToUpdate);
-        }
-
         [HttpPost()]
         public IActionResult Update(Property property)
         {
@@ -64,6 +51,41 @@ namespace BookingAppWeb.Controllers
                 return RedirectToAction("Index", "Property");
             }
             return View();
+        }
+        //e nevoie de get-ul de mai jos, cas a functioneze postul de mai sus
+        public IActionResult Update(int propertyId)
+        {
+            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
+
+            var properties = _dbContext.Properties.Where(p => p.Price > 50 && p.Occupancy > 0);
+            if (propertyToUpdate == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(propertyToUpdate);
+        }
+
+        [HttpPost()]
+        public IActionResult Delete(Property property)
+        {
+            Property? propertyToDelete = _dbContext.Properties.FirstOrDefault(p => p.Id == property.Id);
+            if (propertyToDelete != null)
+            {
+                _dbContext.Properties.Remove(propertyToDelete);
+                _dbContext.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View();
+        }
+        //e nevoie de get-ul de mai jos, cas a functioneze postul de mai sus
+        public IActionResult Delete(int propertyId)
+        {
+            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
+            if (propertyToUpdate == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(propertyToUpdate);
         }
     }
 }
