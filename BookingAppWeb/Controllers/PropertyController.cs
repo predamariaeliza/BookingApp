@@ -40,5 +40,30 @@ namespace BookingAppWeb.Controllers
             }
             return View();
         }
+
+        //[HttpPut()]
+        public IActionResult Update(int propertyId) 
+        {
+            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
+
+            var properties = _dbContext.Properties.Where(p => p.Price > 50 && p.Occupancy > 0);
+            if(propertyToUpdate == null) 
+            {
+                return RedirectToAction("Error", "Home");
+            }
+            return View(propertyToUpdate);
+        }
+
+        [HttpPost()]
+        public IActionResult Update(Property property)
+        {
+            if (ModelState.IsValid && property.Id > 0)
+            {
+                _dbContext.Properties.Update(property);
+                _dbContext.SaveChanges();
+                return RedirectToAction("Index", "Property");
+            }
+            return View();
+        }
     }
 }
