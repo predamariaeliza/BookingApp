@@ -38,28 +38,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-
-            @* mesaje de avertizare / notificari UI*@
-            @if(TempData["error"] != null)
-            {
-                @* pentru Toastr js file*@
-                <script src="~/lib/jquery/dist/jquery.min.js"></script>
-                @* added Toastr -> for notification UI aestetic*@
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-                <script type="text/javascript">
-                    toastr.success('@TempData["error"]');
-                </script>
-            }
-            @if (TempData["success"] != null)
-            {
-                @* pentru Toastr js file*@
-                <script src="~/lib/jquery/dist/jquery.min.js"></script>
-                @* added Toastr -> for notification UI aestetic*@
-                <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-                <script type="text/javascript">
-                    toastr.success('@TempData["success"]');
-                </script>
-            }
+            <partial name="_Notification"/>
             @RenderBody()
         </main>
     </div>
