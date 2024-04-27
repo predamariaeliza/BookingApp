@@ -36,6 +36,7 @@ namespace BookingAppWeb.Controllers
             {
                 _dbContext.Properties.Add(property);
                 _dbContext.SaveChanges();
+                TempData["success"] = "The property has been created successfully.";
                 return RedirectToAction("Index", "Property");
             }
             return View();
@@ -48,6 +49,7 @@ namespace BookingAppWeb.Controllers
             {
                 _dbContext.Properties.Update(property);
                 _dbContext.SaveChanges();
+                TempData["success"] = "The property has been updated successfully.";
                 return RedirectToAction("Index", "Property");
             }
             return View();
@@ -73,8 +75,10 @@ namespace BookingAppWeb.Controllers
             {
                 _dbContext.Properties.Remove(propertyToDelete);
                 _dbContext.SaveChanges();
+                TempData["success"] = "The property has been deleted successfully.";
                 return RedirectToAction("Index");
             }
+            TempData["error"] = "The property could not be deleted.";
             return View();
         }
         //e nevoie de get-ul de mai jos, cas a functioneze postul de mai sus
