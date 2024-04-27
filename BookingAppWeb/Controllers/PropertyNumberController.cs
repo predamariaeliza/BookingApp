@@ -1,6 +1,7 @@
 ﻿using BookingApp.Domain.Entities;
 using BookingApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookingAppWeb.Controllers
 {
@@ -21,6 +22,13 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> properties = _dbContext.Properties.ToList().Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value = p.Id.ToString(),
+            });
+
+            ViewData["ListOfProperties"] = properties;
             return View();
         }
 

@@ -18,10 +18,11 @@
             <div class="p-3">
 
                 @* ASP validations - ModelState from controllers*@
-                <div asp-validation-summary="All"></div>
-
+                @* <div asp-validation-summary="All"></div> *@
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="PropertyId" class="form-control border shadow" />
+                    <select asp-for="@Model.PropertyId" asp-items="@ViewData["ListOfProperties"] as IEnumerable<SelectListItem>" class="form-select border shadow">
+                        <option disabled selected>--Select Property--</option>
+                    </select>
                     <label asp-for="PropertyId" class="ms-2"></label>
                     <span asp-validation-for="PropertyId" class="text-danger"></span>
                 </div>
