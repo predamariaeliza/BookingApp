@@ -27,6 +27,7 @@ namespace BookingAppWeb.Controllers
         [HttpPost()]
         public IActionResult Create(PropertyNumber propertyNumber)
         {
+            ModelState.Remove("Property"); //sterge validarea ca proprietatea Property sa aibe vreo valoare pentru modelul de PropertyNumber
             if(ModelState.IsValid)
             {
                 _dbContext.PropertyNumbers.Add(propertyNumber);

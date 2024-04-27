@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,13 +11,18 @@ namespace BookingApp.Domain.Entities
 {
     public class PropertyNumber
     {
+        //cum se vede in UI
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [Display(Name = "Property Number")] //cum se vede in UI
+        [Display(Name = "Property Number")] 
         public int PropertyNr { get; set; }
 
         [ForeignKey("Property")]
         public int PropertyId { get; set; }
 
+        //ValidateNever, sau 
+        //in controller: ModelState.Remove("Property");
+        //ex: in metoda de Create din PropertyNumberController
+        [ValidateNever]
         public Property Property { get; set; }
 
         public string? SpecialDetails { get; set; }
