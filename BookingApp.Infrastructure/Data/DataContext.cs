@@ -11,6 +11,7 @@ namespace BookingApp.Infrastructure.Data
         }
 
         public DbSet<Property> Properties { get; set; }
+        public DbSet<PropertyNumber> PropertyNumbers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +47,48 @@ namespace BookingApp.Infrastructure.Data
                     Occupancy = 1,
                     Price = 3000,
                     SquareMeters = 300
+                });
+
+            modelBuilder.Entity<PropertyNumber>().HasData(
+                new PropertyNumber
+                {
+                    PropertyNr = 101,
+                    PropertyId = 1,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 102,
+                    PropertyId = 1,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 103,
+                    PropertyId = 1,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 201,
+                    PropertyId = 2,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 202,
+                    PropertyId = 2,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 203,
+                    PropertyId = 2,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 301,
+                    PropertyId = 3,
+                },
+                new PropertyNumber
+                {
+                    PropertyNr = 302,
+                    PropertyId = 3,
                 });
         }
     }
