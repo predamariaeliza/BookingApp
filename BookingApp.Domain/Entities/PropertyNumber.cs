@@ -11,6 +11,7 @@ namespace BookingApp.Domain.Entities
     public class PropertyNumber
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Display(Name = "Property Number")] //cum se vede in UI
         public int PropertyNr { get; set; }
 
         [ForeignKey("Property")]

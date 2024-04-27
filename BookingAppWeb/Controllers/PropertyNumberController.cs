@@ -25,18 +25,13 @@ namespace BookingAppWeb.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Create(Property property)
+        public IActionResult Create(PropertyNumber propertyNumber)
         {
-            if(property.Name == property.Description)
-            {
-                ModelState.AddModelError("name", "The Description cannot match the Name");
-            }
-
             if(ModelState.IsValid)
             {
-                _dbContext.Properties.Add(property);
+                _dbContext.PropertyNumbers.Add(propertyNumber);
                 _dbContext.SaveChanges();
-                TempData["success"] = "The property has been created successfully.";
+                TempData["success"] = "The property number has been created successfully.";
                 return RedirectToAction("Index", "Property");
             }
             return View();
