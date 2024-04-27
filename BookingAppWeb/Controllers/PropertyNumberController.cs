@@ -28,7 +28,7 @@ namespace BookingAppWeb.Controllers
                 Value = p.Id.ToString(),
             });
 
-            ViewData["ListOfProperties"] = properties;
+            ViewBag.ListOfProperties = properties;
             return View();
         }
 
