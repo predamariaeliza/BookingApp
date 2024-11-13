@@ -3,6 +3,7 @@ using BookingApp.Infrastructure.Data;
 using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingAppWeb.Controllers
 {
@@ -17,7 +18,8 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Index()
         {
-            var propertyNumbers = _dbContext.PropertyNumbers.ToList();
+            // exemplu de proprietate de navigare (.Include)
+            var propertyNumbers = _dbContext.PropertyNumbers.Include(p => p.Property).ToList(); 
             return View(propertyNumbers);
         }
 
