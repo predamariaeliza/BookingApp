@@ -99,28 +99,38 @@ namespace BookingAppWeb.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Delete(Property property)
+        public IActionResult Delete(PropertyNumberVM propertyNrVM)
         {
-            Property? propertyToDelete = _dbContext.Properties.FirstOrDefault(p => p.Id == property.Id);
-            if (propertyToDelete != null)
+            PropertyNumber? objFromDb = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNrVM.PropertyNumber.PropertyNr);
+            if (objFromDb != null)
             {
-                _dbContext.Properties.Remove(propertyToDelete);
+                _dbContext.PropertyNumbers.Remove(objFromDb);
                 _dbContext.SaveChanges();
-                TempData["success"] = "The property has been deleted successfully.";
+                TempData["success"] = "The property number has been deleted successfully.";
                 return RedirectToAction("Index");
             }
-            TempData["error"] = "The property could not be deleted.";
+            TempData["error"] = "The property number could not be deleted.";
             return View();
         }
-        //e nevoie de get-ul de mai jos, cas a functioneze postul de mai sus
-        public IActionResult Delete(int propertyId)
+
+        //e nevoie de get-ul de mai jos pentru buna functionare a post-ului de mai sus
+        public IActionResult Delete(int propertyNumberId)
         {
-            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
-            if (propertyToUpdate == null)
+            PropertyNumberVM propertyNumberVM = new()
+            {
+                PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString()
+                }),
+                PropertyNumber = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNumberId)
+            };
+
+            if (propertyNumberVM.PropertyNumber == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(propertyToUpdate);
+            return View(propertyNumberVM);
         }
     }
 }
