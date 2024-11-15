@@ -59,16 +59,23 @@ namespace BookingAppWeb.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Update(Property property)
+        public IActionResult Update(PropertyNumberVM propertyNumberVM)
         {
-            if (ModelState.IsValid && property.Id > 0)
+            if (ModelState.IsValid)
             {
-                _dbContext.Properties.Update(property);
+                _dbContext.PropertyNumbers.Update(propertyNumberVM.PropertyNumber);
                 _dbContext.SaveChanges();
-                TempData["success"] = "The property has been updated successfully.";
+                TempData["success"] = "The property number has been updated successfully.";
                 return RedirectToAction("Index", "Property");
             }
-            return View();
+
+            propertyNumberVM.PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value = p.Id.ToString()
+            });
+
+            return View(propertyNumberVM);
         }
 
         //e nevoie de get-ul de mai jos pentru buna functionare a post-ului de mai sus
