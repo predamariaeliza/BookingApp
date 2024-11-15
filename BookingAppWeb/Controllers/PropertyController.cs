@@ -37,7 +37,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.Properties.Add(property);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property has been created successfully.";
-                return RedirectToAction("Index", "Property");
+                return RedirectToAction(nameof(Index), "Property");
             }
             return View();
         }
@@ -50,7 +50,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.Properties.Update(property);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property has been updated successfully.";
-                return RedirectToAction("Index", "Property");
+                return RedirectToAction(nameof(Index), "Property");
             }
             return View();
         }
@@ -76,7 +76,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.Properties.Remove(propertyToDelete);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property has been deleted successfully.";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             TempData["error"] = "The property could not be deleted.";
             return View();

@@ -48,7 +48,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.PropertyNumbers.Add(obj.PropertyNumber);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property number has been created successfully.";
-                return RedirectToAction("Index", "Property");
+                return RedirectToAction(nameof(Index), "PropertyNumber");
             }
 
             if (propertyNrExists)
@@ -66,7 +66,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.PropertyNumbers.Update(propertyNumberVM.PropertyNumber);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property number has been updated successfully.";
-                return RedirectToAction("Index", "Property");
+                return RedirectToAction(nameof(Index), "PropertyNumber");
             }
 
             propertyNumberVM.PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
@@ -107,7 +107,7 @@ namespace BookingAppWeb.Controllers
                 _dbContext.PropertyNumbers.Remove(objFromDb);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property number has been deleted successfully.";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             TempData["error"] = "The property number could not be deleted.";
             return View();
