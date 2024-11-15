@@ -36,18 +36,25 @@ namespace BookingAppWeb.Controllers
             return View(propertyNumberVM);
         }
 
-        [HttpPost()]
-        public IActionResult Create(PropertyNumber propertyNumber)
+        [HttpPost]
+        public IActionResult Create(PropertyNumberVM obj)
         {
-            ModelState.Remove("Property"); //sterge validarea ca proprietatea Property sa aibe vreo valoare pentru modelul de PropertyNumber
-            if(ModelState.IsValid)
+            //ModelState.Remove("Property"); //sterge validarea ca proprietatea Property sa aibe vreo valoare pentru modelul de PropertyNumber
+            bool propertyNrExists = _dbContext.PropertyNumbers.Any(p => p.PropertyNr == obj.PropertyNumber.PropertyNr);
+
+            if (ModelState.IsValid && !propertyNrExists)
             {
-                _dbContext.PropertyNumbers.Add(propertyNumber);
+                _dbContext.PropertyNumbers.Add(obj.PropertyNumber);
                 _dbContext.SaveChanges();
                 TempData["success"] = "The property number has been created successfully.";
                 return RedirectToAction("Index", "Property");
             }
-            return View();
+
+            if (propertyNrExists)
+            {
+                TempData["error"] = "The property number already exists.";
+            }
+            return View(obj);
         }
 
         [HttpPost()]
