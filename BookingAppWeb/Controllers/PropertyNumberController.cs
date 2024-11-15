@@ -25,6 +25,7 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Create()
         {
+            //load the dropdown
             PropertyNumberVM propertyNumberVM = new()
             {
                 PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
@@ -69,17 +70,25 @@ namespace BookingAppWeb.Controllers
             }
             return View();
         }
-        //e nevoie de get-ul de mai jos, cas a functioneze postul de mai sus
-        public IActionResult Update(int propertyId)
-        {
-            Property? propertyToUpdate = _dbContext.Properties.FirstOrDefault(p => p.Id == propertyId);
 
-            var properties = _dbContext.Properties.Where(p => p.Price > 50 && p.Occupancy > 0);
-            if (propertyToUpdate == null)
+        //e nevoie de get-ul de mai jos pentru buna functionare a post-ului de mai sus
+        public IActionResult Update(int propertyNumberId)
+        {
+            PropertyNumberVM propertyNumberVM = new()
+            {
+                PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+                {
+                    Text = p.Name,
+                    Value = p.Id.ToString()
+                }),
+                PropertyNumber = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNumberId)
+            };
+
+            if (propertyNumberVM.PropertyNumber == null)
             {
                 return RedirectToAction("Error", "Home");
             }
-            return View(propertyToUpdate);
+            return View(propertyNumberVM);
         }
 
         [HttpPost()]
