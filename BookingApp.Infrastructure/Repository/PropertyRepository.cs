@@ -1,5 +1,6 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
+using BookingApp.Infrastructure.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,20 @@ namespace BookingApp.Infrastructure.Repository
 {
     public class PropertyRepository : IPropertyRepository
     {
+        private readonly DataContext _dbContext;
+        public PropertyRepository(DataContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public void CreateProperty(Property property)
         {
-            throw new NotImplementedException();
+            _dbContext.Properties.Add(property);
         }
 
         public void DeleteProperty(Property property)
         {
-            throw new NotImplementedException();
+            _dbContext.Properties.Remove(property);
         }
 
         public IEnumerable<Property> GetAllProperties(Expression<Func<Property, bool>>? filter = null, string? includeProperties = null)
@@ -33,12 +40,12 @@ namespace BookingApp.Infrastructure.Repository
 
         public void Save()
         {
-            throw new NotImplementedException();
+            _dbContext.SaveChanges();
         }
 
         public void UpdateProperty(Property property)
         {
-            throw new NotImplementedException();
+            _dbContext.Properties.Update(property);
         }
     }
 }
