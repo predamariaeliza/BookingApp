@@ -1,6 +1,7 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
 using BookingApp.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +31,43 @@ namespace BookingApp.Infrastructure.Repository
 
         public IEnumerable<Property> GetAllProperties(Expression<Func<Property, bool>>? filter = null, string? includeProperties = null)
         {
-            throw new NotImplementedException();
+            IQueryable<Property> query = _dbContext.Set<Property>();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            if(!string.IsNullOrEmpty(includeProperties))
+            {
+                //Property, PropertyNumber -- case sensitive
+                foreach(var includeProp in includeProperties.Split(new char[] { ','}, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            // return query.ToList()
+            return [.. query];
         }
 
-        public IEnumerable<Property> GetProperty(Expression<Func<Property, bool>> filter, string? includeProperties = null)
+        public Property GetProperty(Expression<Func<Property, bool>> filter, string? includeProperties = null)
         {
-            throw new NotImplementedException();
+            IQueryable<Property> query = _dbContext.Set<Property>();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            if (!string.IsNullOrEmpty(includeProperties))
+            {
+                //Property, PropertyNumber -- case sensitive
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return query.FirstOrDefault();
         }
+            
 
         public void Save()
         {

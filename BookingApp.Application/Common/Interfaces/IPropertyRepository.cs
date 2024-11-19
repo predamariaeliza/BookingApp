@@ -6,7 +6,7 @@ namespace BookingApp.Application.Common.Interfaces
     public interface IPropertyRepository
     {
         IEnumerable<Property> GetAllProperties(Expression<Func<Property, bool>>? filter = null, string? includeProperties = null);
-        IEnumerable<Property> GetProperty(Expression<Func<Property, bool>> filter, string? includeProperties = null);
+        Property GetProperty(Expression<Func<Property, bool>> filter, string? includeProperties = null);
         void CreateProperty(Property property);
         void UpdateProperty(Property property);
         void DeleteProperty(Property property);
