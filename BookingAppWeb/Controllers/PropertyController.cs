@@ -1,6 +1,5 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
-using BookingApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingAppWeb.Controllers
@@ -16,7 +15,7 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Index()
         {
-            var properties = _propertyRepository.GetAllProperties();
+            var properties = _propertyRepository.GetAll();
             return View(properties);
         }
 
@@ -35,7 +34,7 @@ namespace BookingAppWeb.Controllers
 
             if(ModelState.IsValid)
             {
-                _propertyRepository.CreateProperty(property);
+                _propertyRepository.Create(property);
                 _propertyRepository.Save();
                 TempData["success"] = "The property has been created successfully.";
                 return RedirectToAction(nameof(Index), "Property");
@@ -60,7 +59,7 @@ namespace BookingAppWeb.Controllers
         //pagina editabila de update
         public IActionResult Update(int propertyId)
         {
-            Property? propertyToUpdate = _propertyRepository.GetProperty(p => p.Id == propertyId);
+            Property? propertyToUpdate = _propertyRepository.Get(p => p.Id == propertyId);
 
             if (propertyToUpdate == null)
             {
@@ -72,10 +71,10 @@ namespace BookingAppWeb.Controllers
         [HttpPost]
         public IActionResult Delete(Property property)
         {
-            Property? propertyToDelete = _propertyRepository.GetProperty(p => p.Id == property.Id);
+            Property? propertyToDelete = _propertyRepository.Get(p => p.Id == property.Id);
             if (propertyToDelete != null)
             {
-                _propertyRepository.DeleteProperty(propertyToDelete);
+                _propertyRepository.Delete(propertyToDelete);
                 _propertyRepository.Save();
                 TempData["success"] = "The property has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
@@ -88,7 +87,7 @@ namespace BookingAppWeb.Controllers
         //pagina editabila de delete
         public IActionResult Delete(int propertyId)
         {
-            Property? propertyToUpdate = _propertyRepository.GetProperty(p => p.Id == propertyId);
+            Property? propertyToUpdate = _propertyRepository.Get(p => p.Id == propertyId);
             if (propertyToUpdate == null)
             {
                 return RedirectToAction("Error", "Home");

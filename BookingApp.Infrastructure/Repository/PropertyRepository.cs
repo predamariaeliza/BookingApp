@@ -1,73 +1,16 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
 using BookingApp.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BookingApp.Infrastructure.Repository
 {
-    public class PropertyRepository : IPropertyRepository
+    public class PropertyRepository : Repository<Property>, IPropertyRepository
     {
         private readonly DataContext _dbContext;
-        public PropertyRepository(DataContext dbContext)
+        public PropertyRepository(DataContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;
         }
-
-        public void CreateProperty(Property property)
-        {
-            _dbContext.Properties.Add(property);
-        }
-
-        public void DeleteProperty(Property property)
-        {
-            _dbContext.Properties.Remove(property);
-        }
-
-        public IEnumerable<Property> GetAllProperties(Expression<Func<Property, bool>>? filter = null, string? includeProperties = null)
-        {
-            IQueryable<Property> query = _dbContext.Set<Property>();
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            if(!string.IsNullOrEmpty(includeProperties))
-            {
-                //Property, PropertyNumber -- case sensitive
-                foreach(var includeProp in includeProperties.Split(new char[] { ','}, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-
-            // return query.ToList()
-            return [.. query];
-        }
-
-        public Property GetProperty(Expression<Func<Property, bool>> filter, string? includeProperties = null)
-        {
-            IQueryable<Property> query = _dbContext.Set<Property>();
-            if (filter != null)
-            {
-                query = query.Where(filter);
-            }
-            if (!string.IsNullOrEmpty(includeProperties))
-            {
-                //Property, PropertyNumber -- case sensitive
-                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    query = query.Include(includeProp);
-                }
-            }
-
-            return query.FirstOrDefault();
-        }
-            
 
         public void Save()
         {
