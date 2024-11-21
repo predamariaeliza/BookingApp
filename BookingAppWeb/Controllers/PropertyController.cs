@@ -7,15 +7,15 @@ namespace BookingAppWeb.Controllers
 
     public class PropertyController : Controller
     {
-        private readonly IPropertyRepository _propertyRepository;
-        public PropertyController(IPropertyRepository propertyRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public PropertyController(IUnitOfWork unitOfWork)
         {
-            _propertyRepository = propertyRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
-            var properties = _propertyRepository.GetAll();
+            var properties = _unitOfWork.Property.GetAll();
             return View(properties);
         }
 
@@ -34,8 +34,8 @@ namespace BookingAppWeb.Controllers
 
             if(ModelState.IsValid)
             {
-                _propertyRepository.Create(property);
-                _propertyRepository.Save();
+                _unitOfWork.Property.Create(property);
+                _unitOfWork.Property.Save();
                 TempData["success"] = "The property has been created successfully.";
                 return RedirectToAction(nameof(Index), "Property");
             }
@@ -47,8 +47,8 @@ namespace BookingAppWeb.Controllers
         {
             if (ModelState.IsValid && property.Id > 0)
             {
-                _propertyRepository.UpdateProperty(property);
-                _propertyRepository.Save();
+                _unitOfWork.Property.UpdateProperty(property);
+                _unitOfWork.Property.Save();
                 TempData["success"] = "The property has been updated successfully.";
                 return RedirectToAction(nameof(Index), "Property");
             }
@@ -59,7 +59,7 @@ namespace BookingAppWeb.Controllers
         //pagina editabila de update
         public IActionResult Update(int propertyId)
         {
-            Property? propertyToUpdate = _propertyRepository.Get(p => p.Id == propertyId);
+            Property? propertyToUpdate = _unitOfWork.Property.Get(p => p.Id == propertyId);
 
             if (propertyToUpdate == null)
             {
@@ -71,11 +71,11 @@ namespace BookingAppWeb.Controllers
         [HttpPost]
         public IActionResult Delete(Property property)
         {
-            Property? propertyToDelete = _propertyRepository.Get(p => p.Id == property.Id);
+            Property? propertyToDelete = _unitOfWork.Property.Get(p => p.Id == property.Id);
             if (propertyToDelete != null)
             {
-                _propertyRepository.Delete(propertyToDelete);
-                _propertyRepository.Save();
+                _unitOfWork.Property.Delete(propertyToDelete);
+                _unitOfWork.Property.Save();
                 TempData["success"] = "The property has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -87,7 +87,7 @@ namespace BookingAppWeb.Controllers
         //pagina editabila de delete
         public IActionResult Delete(int propertyId)
         {
-            Property? propertyToUpdate = _propertyRepository.Get(p => p.Id == propertyId);
+            Property? propertyToUpdate = _unitOfWork.Property.Get(p => p.Id == propertyId);
             if (propertyToUpdate == null)
             {
                 return RedirectToAction("Error", "Home");
