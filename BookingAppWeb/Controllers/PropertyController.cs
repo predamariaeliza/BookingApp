@@ -35,7 +35,7 @@ namespace BookingAppWeb.Controllers
             if(ModelState.IsValid)
             {
                 _unitOfWork.Property.Create(property);
-                _unitOfWork.Property.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "The property has been created successfully.";
                 return RedirectToAction(nameof(Index), "Property");
             }
@@ -48,7 +48,7 @@ namespace BookingAppWeb.Controllers
             if (ModelState.IsValid && property.Id > 0)
             {
                 _unitOfWork.Property.UpdateProperty(property);
-                _unitOfWork.Property.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "The property has been updated successfully.";
                 return RedirectToAction(nameof(Index), "Property");
             }
@@ -75,7 +75,7 @@ namespace BookingAppWeb.Controllers
             if (propertyToDelete != null)
             {
                 _unitOfWork.Property.Delete(propertyToDelete);
-                _unitOfWork.Property.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "The property has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }

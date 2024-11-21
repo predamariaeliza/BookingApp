@@ -13,5 +13,10 @@ namespace BookingApp.Infrastructure.Repository
             _dbContext = dbContext;
             Property = new PropertyRepository(_dbContext);
         }
+
+        public void Save()
+        {
+            _dbContext.SaveChanges();
+        }
     }
 }

@@ -12,11 +12,6 @@ namespace BookingApp.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public void Save()
-        {
-            _dbContext.SaveChanges();
-        }
-
         public void UpdateProperty(Property property)
         {
             _dbContext.Properties.Update(property);

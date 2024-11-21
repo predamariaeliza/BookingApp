@@ -9,5 +9,6 @@ namespace BookingApp.Application.Common.Interfaces
     public interface IUnitOfWork
     {
         IPropertyRepository Property { get; }
+        void Save();
     }
 }
