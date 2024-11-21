@@ -2,7 +2,6 @@ using BookingApp.Application.Common.Interfaces;
 using BookingApp.Infrastructure.Data;
 using BookingApp.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
