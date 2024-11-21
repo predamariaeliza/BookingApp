@@ -13,7 +13,10 @@
 
     @* Lista valorilor de adaugat pentru noua proprietate *@
     <div class="card-body border p-4">
-        <form method="post" class="row">
+
+        @* enctype="multipart/form-data" => activeaza Upload button la incarcarea imaginii 
+                                         => trimite imaginea catre entitatea Property in backend*@
+        <form method="post" class="row" enctype="multipart/form-data">
 
             <div class="p-3">
 
@@ -46,7 +49,13 @@
                     <span asp-validation-for="Occupancy" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <input asp-for="ImageUrl" class="form-control border shadow" />
+
+                    @* hidden class -> ascunde proprietatea*@
+                    <input asp-for="ImageUrl" hidden class="form-control border shadow" />
+
+                    @* creaza butonul "Choose file"*@
+                    <input asp-for="Image" class="form-control border shadow" />
+
                     <label asp-for="ImageUrl" class="ms-2">ImageUrl</label>
                     <span asp-validation-for="ImageUrl" class="text-danger"></span>
                 </div>

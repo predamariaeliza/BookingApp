@@ -8,9 +8,12 @@ namespace BookingAppWeb.Controllers
     public class PropertyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public PropertyController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public PropertyController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
@@ -34,6 +37,26 @@ namespace BookingAppWeb.Controllers
 
             if(ModelState.IsValid)
             {
+                //trimite imaginea din frontend catre root (folder-ul sursa)
+                if (property.Image != null)
+                {
+                    //redenumim fisierul incarcat + pastram formatul fisierului (extensia)
+                    string fileName = Guid.NewGuid().ToString()+ Path.GetExtension(property.Image.FileName);
+                    //path-ul(ruta) catre BookingAppWeb => wwwroot => Images => Property (unde se va salva imaginea)
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\PropertyImage");
+
+                    //copierea imaginii in folder
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    property.Image.CopyTo(fileStream);
+
+                    //upload the new image URL
+                    property.ImageUrl = @"\images\PropertyImage\" + fileName;
+                }
+                else
+                {
+                    property.ImageUrl = "https://placehold.co/600x400";
+                }
+
                 _unitOfWork.Property.Create(property);
                 _unitOfWork.Save();
                 TempData["success"] = "The property has been created successfully.";
