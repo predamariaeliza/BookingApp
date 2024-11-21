@@ -70,7 +70,37 @@ namespace BookingAppWeb.Controllers
         {
             if (ModelState.IsValid && property.Id > 0)
             {
-                _unitOfWork.Property.UpdateProperty(property);
+
+                //trimite imaginea din frontend catre root (folder-ul sursa)
+                if (property.Image != null)
+                {
+                    //redenumim fisierul incarcat + pastram formatul fisierului (extensia)
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(property.Image.FileName);
+                    //path-ul(ruta) catre BookingAppWeb => wwwroot => Images => Property (unde se va salva imaginea)
+                    string imagePath = Path.Combine(_webHostEnvironment.WebRootPath, @"images\PropertyImage");
+
+                    //daca este o imagine veche, o va sterge
+                    // ->TrimStart() -> taie un \ de la inceputul string-ului, stocat din db
+                    if(!string.IsNullOrEmpty(property.ImageUrl))
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, property.ImageUrl.TrimStart('\\'));
+
+                        //daca este o imagine veche, o va sterge
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    //copierea imaginii in folder
+                    using var fileStream = new FileStream(Path.Combine(imagePath, fileName), FileMode.Create);
+                    property.Image.CopyTo(fileStream);
+
+                    //upload the new image URL
+                    property.ImageUrl = @"\images\PropertyImage\" + fileName;
+                }
+
+                _unitOfWork.Property.Update(property);
                 _unitOfWork.Save();
                 TempData["success"] = "The property has been updated successfully.";
                 return RedirectToAction(nameof(Index), "Property");
