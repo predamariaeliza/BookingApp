@@ -1,25 +1,24 @@
-﻿using BookingApp.Domain.Entities;
-using BookingApp.Infrastructure.Data;
+﻿using BookingApp.Application.Common.Interfaces;
+using BookingApp.Domain.Entities;
 using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace BookingAppWeb.Controllers
 {
 
     public class PropertyNumberController : Controller
     {
-        private readonly DataContext _dbContext;
-        public PropertyNumberController(DataContext dbContext)
+        private readonly IUnitOfWork _unitOfWork;
+        public PropertyNumberController(IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
         {
             // exemplu de proprietate de navigare (.Include)
-            var propertyNumbers = _dbContext.PropertyNumbers.Include(p => p.Property).ToList(); 
+            var propertyNumbers = _unitOfWork.PropertyNumber.GetAll(includeProperties: "Property"); 
             return View(propertyNumbers);
         }
 
@@ -28,7 +27,7 @@ namespace BookingAppWeb.Controllers
             //load the dropdown
             PropertyNumberVM propertyNumberVM = new()
             {
-                PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+                PropertyList = _unitOfWork.Property.GetAll().Select(p => new SelectListItem
                 {
                     Text = p.Name,
                     Value = p.Id.ToString()
@@ -41,12 +40,12 @@ namespace BookingAppWeb.Controllers
         public IActionResult Create(PropertyNumberVM obj)
         {
             //ModelState.Remove("Property"); //sterge validarea ca proprietatea Property sa aibe vreo valoare pentru modelul de PropertyNumber
-            bool propertyNrExists = _dbContext.PropertyNumbers.Any(p => p.PropertyNr == obj.PropertyNumber.PropertyNr);
+            bool propertyNrExists = _unitOfWork.PropertyNumber.Any(p => p.PropertyNr == obj.PropertyNumber.PropertyNr);
 
             if (ModelState.IsValid && !propertyNrExists)
             {
-                _dbContext.PropertyNumbers.Add(obj.PropertyNumber);
-                _dbContext.SaveChanges();
+                _unitOfWork.PropertyNumber.Create(obj.PropertyNumber);
+                _unitOfWork.Save();
                 TempData["success"] = "The property number has been created successfully.";
                 return RedirectToAction(nameof(Index), "PropertyNumber");
             }
@@ -55,6 +54,12 @@ namespace BookingAppWeb.Controllers
             {
                 TempData["error"] = "The property number already exists.";
             }
+
+            obj.PropertyList = _unitOfWork.Property.GetAll().Select(p => new SelectListItem
+            {
+                Text = p.Name,
+                Value = p.Id.ToString()
+            });
             return View(obj);
         }
 
@@ -63,13 +68,13 @@ namespace BookingAppWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.PropertyNumbers.Update(propertyNumberVM.PropertyNumber);
-                _dbContext.SaveChanges();
+                _unitOfWork.PropertyNumber.Update(propertyNumberVM.PropertyNumber);
+                _unitOfWork.Save();
                 TempData["success"] = "The property number has been updated successfully.";
                 return RedirectToAction(nameof(Index), "PropertyNumber");
             }
 
-            propertyNumberVM.PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+            propertyNumberVM.PropertyList = _unitOfWork.Property.GetAll().Select(p => new SelectListItem
             {
                 Text = p.Name,
                 Value = p.Id.ToString()
@@ -83,12 +88,12 @@ namespace BookingAppWeb.Controllers
         {
             PropertyNumberVM propertyNumberVM = new()
             {
-                PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+                PropertyList = _unitOfWork.Property.GetAll().Select(p => new SelectListItem
                 {
                     Text = p.Name,
                     Value = p.Id.ToString()
                 }),
-                PropertyNumber = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNumberId)
+                PropertyNumber = _unitOfWork.PropertyNumber.Get(p => p.PropertyNr == propertyNumberId)
             };
 
             if (propertyNumberVM.PropertyNumber == null)
@@ -101,11 +106,11 @@ namespace BookingAppWeb.Controllers
         [HttpPost()]
         public IActionResult Delete(PropertyNumberVM propertyNrVM)
         {
-            PropertyNumber? objFromDb = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNrVM.PropertyNumber.PropertyNr);
+            PropertyNumber? objFromDb = _unitOfWork.PropertyNumber.Get(p => p.PropertyNr == propertyNrVM.PropertyNumber.PropertyNr);
             if (objFromDb != null)
             {
-                _dbContext.PropertyNumbers.Remove(objFromDb);
-                _dbContext.SaveChanges();
+                _unitOfWork.PropertyNumber.Delete(objFromDb);
+                _unitOfWork.Save();
                 TempData["success"] = "The property number has been deleted successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -118,12 +123,12 @@ namespace BookingAppWeb.Controllers
         {
             PropertyNumberVM propertyNumberVM = new()
             {
-                PropertyList = _dbContext.Properties.ToList().Select(p => new SelectListItem
+                PropertyList = _unitOfWork.Property.GetAll().Select(p => new SelectListItem
                 {
                     Text = p.Name,
                     Value = p.Id.ToString()
                 }),
-                PropertyNumber = _dbContext.PropertyNumbers.FirstOrDefault(p => p.PropertyNr == propertyNumberId)
+                PropertyNumber = _unitOfWork.PropertyNumber.Get(p => p.PropertyNr == propertyNumberId)
             };
 
             if (propertyNumberVM.PropertyNumber == null)
