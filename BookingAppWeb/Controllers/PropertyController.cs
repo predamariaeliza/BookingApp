@@ -70,7 +70,6 @@ namespace BookingAppWeb.Controllers
         {
             if (ModelState.IsValid && property.Id > 0)
             {
-
                 //trimite imaginea din frontend catre root (folder-ul sursa)
                 if (property.Image != null)
                 {
@@ -127,6 +126,17 @@ namespace BookingAppWeb.Controllers
             Property? propertyToDelete = _unitOfWork.Property.Get(p => p.Id == property.Id);
             if (propertyToDelete != null)
             {
+                if (!string.IsNullOrEmpty(propertyToDelete.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath, propertyToDelete.ImageUrl.TrimStart('\\'));
+
+                    //daca este o imagine veche, o va sterge
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
                 _unitOfWork.Property.Delete(propertyToDelete);
                 _unitOfWork.Save();
                 TempData["success"] = "The property has been deleted successfully.";
