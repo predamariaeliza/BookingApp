@@ -1,5 +1,7 @@
 
-﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BookingApp.Domain.Entities
 {
@@ -19,6 +21,9 @@ namespace BookingApp.Domain.Entities
 
         [Range(1,10)]
         public double Occupancy { get; set; }
+
+        [NotMapped] // anuntam ef core -> coloana adaugata pe entitate nu trebuie adaugata si in db
+        public IFormFile? Image { get; set; }
 
         [Display(Name ="Image Url")]
         public string? ImageUrl { get; set; }

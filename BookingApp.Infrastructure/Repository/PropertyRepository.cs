@@ -12,7 +12,7 @@ namespace BookingApp.Infrastructure.Repository
             _dbContext = dbContext;
         }
 
-        public void UpdateProperty(Property property)
+        public void Update(Property property)
         {
             _dbContext.Properties.Update(property);
         }

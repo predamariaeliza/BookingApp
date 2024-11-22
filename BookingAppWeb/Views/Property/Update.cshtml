@@ -13,63 +13,82 @@
 
     @* Lista valorilor de adaugat pentru noua proprietate *@
     <div class="card-body border p-4">
-        <form method="post" class="row">
+
+        @* enctype="multipart/form-data" => activeaza Upload button la incarcarea imaginii 
+                                         => trimite imaginea catre entitatea Property in backend*@
+        <form method="post" class="row" enctype="multipart/form-data">
             <input asp-for="Id" hidden/>
 
-            <div class="p-3">
+            @* Update 1 property page -> am mutat elementele mai la stanga,
+            pentru a adauga imaginea proprietatii(constructiei)*@
+            <div class="col-10">
+                <div class="p-3">
 
-                @* ASP validations - ModelState from controllers*@
-                <div asp-validation-summary="All"></div>
+                    @* ASP validations - ModelState from controllers*@
+                    <div asp-validation-summary="All"></div>
 
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Name" class="form-control border shadow" />
-                    <label asp-for="Name" class="ms-2">Name</label>
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Description" class="form-control border shadow" />
-                    <label asp-for="Description" class="ms-2">Description</label>
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Price" class="form-control border shadow" />
-                    <label asp-for="Price" class="ms-2">Price</label>
-                    <span asp-validation-for="Price" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="SquareMeters" class="form-control border shadow" />
-                    <label asp-for="SquareMeters" class="ms-2">SquareMeters</label>
-                    <span asp-validation-for="SquareMeters" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="Occupancy" class="form-control border shadow" />
-                    <label asp-for="Occupancy" class="ms-2">Occupancy</label>
-                    <span asp-validation-for="Occupancy" class="text-danger"></span>
-                </div>
-                <div class="form-floating py-2 col-12">
-                    <input asp-for="ImageUrl" class="form-control border shadow" />
-                    <label asp-for="ImageUrl" class="ms-2">ImageUrl</label>
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
-                </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Name" class="form-control border shadow" />
+                        <label asp-for="Name" class="ms-2">Name</label>
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Description" class="form-control border shadow" />
+                        <label asp-for="Description" class="ms-2">Description</label>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Price" class="form-control border shadow" />
+                        <label asp-for="Price" class="ms-2">Price</label>
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="SquareMeters" class="form-control border shadow" />
+                        <label asp-for="SquareMeters" class="ms-2">SquareMeters</label>
+                        <span asp-validation-for="SquareMeters" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
+                        <input asp-for="Occupancy" class="form-control border shadow" />
+                        <label asp-for="Occupancy" class="ms-2">Occupancy</label>
+                        <span asp-validation-for="Occupancy" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating py-2 col-12">
 
-                <div class="row pt-2">
+                        <input asp-for="Image" class="form-control border shadow" />
 
-                    @* Create button *@
-                    <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="bi bi-check-circle"></i> Update
-                        </button>
+                        @* hidden class -> ascunde linia*@
+                        <input asp-for="ImageUrl" hidden class="form-control border shadow" />
+
+                        <label asp-for="ImageUrl" class="ms-2">ImageUrl</label>
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
                     </div>
 
-                    @* Cancel button => ma duce inapoi la pagina de Index*@
-                    <div class="col-6 col-md-3">
-                        <a asp-controller="Property" asp-action="Index" class="btn btn-secondary w-100">
-                            <i class="bi bi-x-circle"></i> Cancel
-                        </a>
+                    <div class="row pt-2">
+
+                        @* Create button *@
+                        <div class="col-6 col-md-3">
+                            <button type="submit" class="btn btn-success w-100">
+                                <i class="bi bi-check-circle"></i> Update
+                            </button>
+                        </div>
+
+                        @* Cancel button => ma duce inapoi la pagina de Index*@
+                        <div class="col-6 col-md-3">
+                            <a asp-controller="Property" asp-action="Index" class="btn btn-secondary w-100">
+                                <i class="bi bi-x-circle"></i> Cancel
+                            </a>
+                        </div>
+
                     </div>
 
                 </div>
+            </div>
 
+            <div class="col-2">
+
+                @*Imaginea Proprietatii(constructiei)*@
+                <img src ="@Model.ImageUrl" width="100%"
+                     style=" border-radius:5px; border:1px solid #bbb9b9" />
             </div>
 
         </form>
