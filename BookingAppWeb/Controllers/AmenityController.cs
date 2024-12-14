@@ -18,7 +18,7 @@ namespace BookingAppWeb.Controllers
         public IActionResult Index()
         {
             // exemplu de proprietate de navigare (.Include)
-            var amenities = _unitOfWork.Amenity.GetAll(includeProperties: "Amenity"); 
+            var amenities = _unitOfWork.Amenity.GetAll(includeProperties: "Property"); 
             return View(amenities);
         }
 
