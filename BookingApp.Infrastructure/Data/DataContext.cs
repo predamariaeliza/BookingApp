@@ -12,6 +12,7 @@ namespace BookingApp.Infrastructure.Data
 
         public DbSet<Property> Properties { get; set; }
         public DbSet<PropertyNumber> PropertyNumbers { get; set; }
+        public DbSet<Amenity> Amenities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,6 +91,66 @@ namespace BookingApp.Infrastructure.Data
                     PropertyNr = 302,
                     PropertyId = 3,
                 });
+
+            modelBuilder.Entity<Amenity>().HasData(
+          new Amenity
+          {
+              Id = 1,
+              PropertyId = 1,
+              Name = "Private Pool"
+          }, new Amenity
+          {
+              Id = 2,
+              PropertyId = 1,
+              Name = "Microwave"
+          }, new Amenity
+          {
+              Id = 3,
+              PropertyId = 1,
+              Name = "Private Balcony"
+          }, new Amenity
+          {
+              Id = 4,
+              PropertyId = 1,
+              Name = "1 king bed and 1 sofa bed"
+          },
+          new Amenity
+          {
+              Id = 5,
+              PropertyId = 2,
+              Name = "Private Plunge Pool"
+          }, new Amenity
+          {
+              Id = 6,
+              PropertyId = 2,
+              Name = "Microwave and Mini Refrigerator"
+          }, new Amenity
+          {
+              Id = 7,
+              PropertyId = 2,
+              Name = "Private Balcony"
+          }, new Amenity
+          {
+              Id = 8,
+              PropertyId = 2,
+              Name = "king bed or 2 double beds"
+          },
+          new Amenity
+          {
+              Id = 9,
+              PropertyId = 3,
+              Name = "Private Pool"
+          }, new Amenity
+          {
+              Id = 10,
+              PropertyId = 3,
+              Name = "Jacuzzi"
+          }, new Amenity
+          {
+              Id = 11,
+              PropertyId = 3,
+              Name = "Private Balcony"
+          });
         }
     }
 }
