@@ -4,6 +4,7 @@
     {
         IPropertyRepository Property { get; }
         IPropertyNumberRepository PropertyNumber { get; }
+        IAmenityRepository Amenity { get; }
         void Save();
     }
 }
