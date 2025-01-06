@@ -13,7 +13,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
             <div class="container-fluid">
                     @* imaginea siglei site-ului*@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/site-logo.png" style="width:100px"/></a>
@@ -48,8 +48,8 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="">
+        <main role="main">
             <partial name="_Notification"/>
             @RenderBody()
         </main>
@@ -57,7 +57,7 @@
 
     <footer class="border-top footer bg-dark text-muted">
         <div class="container text-center">
-            Made by Preda Maria Eliza - 2024
+            Made by Preda Maria Eliza - 2024-2025
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
