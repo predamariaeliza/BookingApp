@@ -19,7 +19,7 @@ namespace BookingAppWeb.Controllers
         {
             HomeVM homeVM = new()
             {
-                PropertiesList = _unitOfWork.Property.GetAll(),
+                PropertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity"),
                 Nights = 1,
                 CheckInDate = DateOnly.FromDateTime(DateTime.Now)
             };
