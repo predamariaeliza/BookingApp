@@ -17,7 +17,8 @@ namespace BookingApp.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
+            //required for .NET IdentityDbContext, not required for DbContext
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Property>().HasData(
                 new Property
