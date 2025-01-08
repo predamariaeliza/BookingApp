@@ -1,4 +1,5 @@
 using BookingApp.Application.Common.Interfaces;
+using BookingApp.Domain.Entities;
 using BookingApp.Infrastructure.Data;
 using BookingApp.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<DataContext>(option =>
 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 //pentru logare, adaugam .NetIdentity
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>(); // TokenProviders => required pentru functionalitatea de email & confirmare
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

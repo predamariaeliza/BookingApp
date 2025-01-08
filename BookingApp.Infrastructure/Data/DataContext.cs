@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Data
 {
-    public class DataContext : IdentityDbContext
+    public class DataContext : IdentityDbContext<ApplicationUser>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) 
         { 
@@ -14,6 +14,7 @@ namespace BookingApp.Infrastructure.Data
         public DbSet<Property> Properties { get; set; }
         public DbSet<PropertyNumber> PropertyNumbers { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
