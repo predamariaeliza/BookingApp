@@ -1,9 +1,10 @@
 ﻿using BookingApp.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) 
         { 
