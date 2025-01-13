@@ -1,9 +1,10 @@
 ﻿using BookingApp.Domain.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingApp.Infrastructure.Data
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<ApplicationUser>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) 
         { 
@@ -13,10 +14,12 @@ namespace BookingApp.Infrastructure.Data
         public DbSet<Property> Properties { get; set; }
         public DbSet<PropertyNumber> PropertyNumbers { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //base.OnModelCreating(modelBuilder);
+            //required for .NET IdentityDbContext, not required for DbContext
+            base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Property>().HasData(
                 new Property
