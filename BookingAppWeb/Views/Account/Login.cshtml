@@ -15,15 +15,15 @@
                     <section>
                         <form method="post">
                             <div class="form-floating mb-3">
-                                <input class="form-control" aria-required="true" />
-                                <label class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" aria-required="true" />
+                                <label asp-for="Email" class="form-label"></label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input class="form-control" aria-required="true" />
-                                <label class="form-label">Password</label>
+                                <input asp-for="Password" class="form-control" aria-required="true" />
+                                <label asp-for="Password" class="form-label"></label>
                             </div>
                             <div class="checkbox mb-3">
-                                <input class="form-check-input" />
+                                <input class="form-check-input" asp-for="RememberMe"/>
 
                                 <label class="form-label">
                                     Remember Me
