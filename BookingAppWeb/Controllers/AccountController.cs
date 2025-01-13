@@ -1,5 +1,6 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
+using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,9 +21,18 @@ namespace BookingAppWeb.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl=null)
         {
-            return View();
+            //if returnUrl !null => return content
+            returnUrl ??= Url.Content("~/");
+
+            LoginVM loginVM = new()
+            {
+                RedirectURL = returnUrl,
+            };
+
+
+            return View(loginVM);
         }
         public IActionResult Register ()
         {
