@@ -1,4 +1,5 @@
 ﻿using BookingApp.Application.Common.Interfaces;
+using BookingApp.Application.Common.Utility;
 using BookingApp.Domain.Entities;
 using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Identity;
@@ -37,13 +38,13 @@ namespace BookingAppWeb.Controllers
         }
         public IActionResult Register ()
         {
-            if(!_roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult())
+            if(!_roleManager.RoleExistsAsync(StaticDetails.Role_Admin).GetAwaiter().GetResult())
             {
                 // .Wait() asteapta ca task-ul sa fie complet executat
                 // .Wait() => inlocuitor pentru async & await
-                _roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
-                _roleManager.CreateAsync(new IdentityRole("Customer")).Wait();
-                _roleManager.CreateAsync(new IdentityRole("PropertyOwner")).Wait(); 
+                _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_Admin)).Wait();
+                _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_Customer)).Wait();
+                _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_PropertyOwner)).Wait(); 
             }
 
             RegisterVM registerVM = new()
