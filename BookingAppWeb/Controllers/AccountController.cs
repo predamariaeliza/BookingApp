@@ -36,6 +36,14 @@ namespace BookingAppWeb.Controllers
         }
         public IActionResult Register ()
         {
+            if(!_roleManager.RoleExistsAsync("Admin").GetAwaiter().GetResult())
+            {
+                // .Wait() asteapta ca task-ul sa fie complet executat
+                // .Wait() => inlocuitor pentru async & await
+                _roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
+                _roleManager.CreateAsync(new IdentityRole("Customer")).Wait();
+                _roleManager.CreateAsync(new IdentityRole("PropertyOwner")).Wait(); 
+            }
             return View();
         }
     }
