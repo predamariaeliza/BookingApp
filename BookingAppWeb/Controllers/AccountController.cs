@@ -3,6 +3,7 @@ using BookingApp.Domain.Entities;
 using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookingAppWeb.Controllers
 {
@@ -44,7 +45,17 @@ namespace BookingAppWeb.Controllers
                 _roleManager.CreateAsync(new IdentityRole("Customer")).Wait();
                 _roleManager.CreateAsync(new IdentityRole("PropertyOwner")).Wait(); 
             }
-            return View();
+
+            RegisterVM registerVM = new()
+            {
+                RoleList = _roleManager.Roles.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Name
+                })
+            };
+
+            return View(registerVM);
         }
     }
 }
