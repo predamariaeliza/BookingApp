@@ -76,10 +76,10 @@ namespace BookingAppWeb.Controllers
 
             var result = await _userManager.CreateAsync(user, registerVM.Password);
 
-            // ADAUGARE ROL USER
             // daca rezultatul este un succes
             if (result.Succeeded)
             {
+                // ADAUGARE/ASIGNARE ROL USER
                 // daca exista cel putin un rol selectat
                 if (!string.IsNullOrEmpty(registerVM.Role))
                 {
@@ -128,6 +128,44 @@ namespace BookingAppWeb.Controllers
             });
         
             return View(registerVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVM)
+        {
+            if(ModelState.IsValid)
+            {
+                // verificare User & Parola
+                var result = await _signInManager
+                    .PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, lockoutOnFailure:false);
+
+                // daca rezultatul este un succes
+                if (result.Succeeded)
+                {
+                    // redirectionam catre:
+                    if (string.IsNullOrEmpty(loginVM.RedirectURL))
+                    {
+                        // pagina de Home - daca nu exista redirectURL
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        // Url - ul Redirectionat - daca exista redirectURL
+                        // LocalRedirect -> redirectionam mereu catre domeniul local
+                        // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
+                        // * (security measure)
+                        return LocalRedirect(loginVM.RedirectURL);
+                    }
+                }
+                // daca rezultatul nu este un succes
+                // => nu vrem sa aratam utilizatorului eroarea
+                else
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                }
+            }
+
+            return View(loginVM);
         }
     }
 }
