@@ -33,8 +33,13 @@ namespace BookingAppWeb.Controllers
                 RedirectURL = returnUrl,
             };
 
-
             return View(loginVM);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index","Home");
         }
 
         public IActionResult Register ()
