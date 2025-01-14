@@ -16,6 +16,12 @@ option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<DataContext>(); // TokenProviders => required pentru functionalitatea de email & confirmare
 
+builder.Services.ConfigureApplicationCookie(options =>
+{ 
+    options.AccessDeniedPath = "/Account/AccessDenied";
+    options.LoginPath = "/Account/Login";
+});
+
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 var app = builder.Build();
 
