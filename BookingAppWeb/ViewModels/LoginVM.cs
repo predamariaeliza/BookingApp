@@ -13,6 +13,6 @@ namespace BookingAppWeb.ViewModels
 
         public bool RememberMe { get; set; }
 
-        public string? RedirectURL { get; set; }
+        public string? RedirectUrl { get; set; }
     }
 }

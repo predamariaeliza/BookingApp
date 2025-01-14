@@ -30,7 +30,7 @@ namespace BookingAppWeb.Controllers
 
             LoginVM loginVM = new()
             {
-                RedirectURL = returnUrl,
+                RedirectUrl = returnUrl,
             };
 
             return View(loginVM);
@@ -47,9 +47,10 @@ namespace BookingAppWeb.Controllers
             return View();
         }
 
-        public IActionResult Register ()
+        public IActionResult Register (string returnUrl = null)
         {
-            if(!_roleManager.RoleExistsAsync(StaticDetails.Role_Admin).GetAwaiter().GetResult())
+            returnUrl ??= Url.Content("~/");
+            if (!_roleManager.RoleExistsAsync(StaticDetails.Role_Admin).GetAwaiter().GetResult())
             {
                 // .Wait() asteapta ca task-ul sa fie complet executat
                 // .Wait() => inlocuitor pentru async & await
@@ -64,7 +65,8 @@ namespace BookingAppWeb.Controllers
                 {
                     Text = x.Name,
                     Value = x.Name
-                })
+                }),
+                RedirectUrl = returnUrl,
             };
 
             return View(registerVM);
@@ -73,63 +75,65 @@ namespace BookingAppWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-            ApplicationUser user = new()
+            if (ModelState.IsValid)
             {
-                Name = registerVM.Name,
-                Email = registerVM.Email,
-                PhoneNumber = registerVM.PhoneNumber,
-                NormalizedEmail = registerVM.Email.ToUpper(),
-                EmailConfirmed = true,
-                UserName = registerVM.Email,
-                CreatedAt = DateTime.Now,
-            };
-
-            var result = await _userManager.CreateAsync(user, registerVM.Password);
-
-            // daca rezultatul este un succes
-            if (result.Succeeded)
-            {
-                // ADAUGARE/ASIGNARE ROL USER
-                // daca exista cel putin un rol selectat
-                if (!string.IsNullOrEmpty(registerVM.Role))
+                ApplicationUser user = new()
                 {
-                    // se adauga un singur rol -> AddToRolesAsync pt mai multe roluri
-                    await _userManager.AddToRoleAsync(user, registerVM.Role);
-                }
-                // daca nu exista niciun rol selectat, userul primeste automat rolul de Customer
-                else
+                    Name = registerVM.Name,
+                    Email = registerVM.Email,
+                    PhoneNumber = registerVM.PhoneNumber,
+                    NormalizedEmail = registerVM.Email.ToUpper(),
+                    EmailConfirmed = true,
+                    UserName = registerVM.Email,
+                    CreatedAt = DateTime.Now,
+                };
+
+                var result = await _userManager.CreateAsync(user, registerVM.Password);
+
+                // daca rezultatul este un succes
+                if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, StaticDetails.Role_Customer);
+                    // ADAUGARE/ASIGNARE ROL USER
+                    // daca exista cel putin un rol selectat
+                    if (!string.IsNullOrEmpty(registerVM.Role))
+                    {
+                        // se adauga un singur rol -> AddToRolesAsync pt mai multe roluri
+                        await _userManager.AddToRoleAsync(user, registerVM.Role);
+                    }
+                    // daca nu exista niciun rol selectat, userul primeste automat rolul de Customer
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, StaticDetails.Role_Customer);
+                    }
+
+                    // isPersistent:false - sign in the user in mod automat
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+
+                    // redirectionam catre:
+                    if (string.IsNullOrEmpty(registerVM.RedirectUrl))
+                    {
+                        // pagina de Home - daca nu exista redirectURL
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        // Url - ul Redirectionat - daca exista redirectURL
+                        // LocalRedirect -> redirectionam mereu catre domeniul local
+                        // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
+                        // * (security measure)
+                        return LocalRedirect(registerVM.RedirectUrl);
+                    }
+
                 }
 
-                // isPersistent:false - sign in the user in mod automat
-                await _signInManager.SignInAsync(user, isPersistent: false);
-
-                // redirectionam catre:
-                if (string.IsNullOrEmpty(registerVM.RedirectURL))
+                // daca rezultatul nu este un succes
+                // afisam eroarea
+                foreach (var error in result.Errors)
                 {
-                    // pagina de Home - daca nu exista redirectURL
-                    return RedirectToAction("Index", "Home");
+                    // nu adaugam KEY, se va afisa eroarea de pe UI (asp-validation-summary = "ModelOnly" class = "text-danger")
+                    ModelState.AddModelError("", error.Description);
                 }
-                else
-                {
-                    // Url - ul Redirectionat - daca exista redirectURL
-                    // LocalRedirect -> redirectionam mereu catre domeniul local
-                    // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
-                    // * (security measure)
-                    return LocalRedirect(registerVM.RedirectURL);
-                }
-
             }
-
-            // daca rezultatul nu este un succes
-            // afisam eroarea
-            foreach (var error in result.Errors)
-            {
-                // nu adaugam KEY, se va afisa eroarea de pe UI (asp-validation-summary = "ModelOnly" class = "text-danger")
-                ModelState.AddModelError("", error.Description);
-            }
-
             // populam lista row
             registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem
             {
@@ -153,7 +157,7 @@ namespace BookingAppWeb.Controllers
                 if (result.Succeeded)
                 {
                     // redirectionam catre:
-                    if (string.IsNullOrEmpty(loginVM.RedirectURL))
+                    if (string.IsNullOrEmpty(loginVM.RedirectUrl))
                     {
                         // pagina de Home - daca nu exista redirectURL
                         return RedirectToAction("Index", "Home");
@@ -164,7 +168,7 @@ namespace BookingAppWeb.Controllers
                         // LocalRedirect -> redirectionam mereu catre domeniul local
                         // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
                         // * (security measure)
-                        return LocalRedirect(loginVM.RedirectURL);
+                        return LocalRedirect(loginVM.RedirectUrl);
                     }
                 }
                 // daca rezultatul nu este un succes
