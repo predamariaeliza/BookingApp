@@ -1,10 +1,12 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingAppWeb.Controllers
 {
-
+    //an user cannot access this logic if it's not logged in
+    [Authorize]
     public class PropertyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -1,12 +1,15 @@
 ﻿using BookingApp.Application.Common.Interfaces;
+using BookingApp.Application.Common.Utility;
 using BookingApp.Domain.Entities;
 using BookingAppWeb.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookingAppWeb.Controllers
 {
-
+    //if a user want's to access this logic, it needs to log in first
+    [Authorize(Roles = StaticDetails.Role_PropertyOwner)]
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
