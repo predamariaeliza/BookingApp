@@ -5,7 +5,7 @@ using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
+//first commit
 namespace BookingAppWeb.Controllers
 {
     public class AccountController : Controller
