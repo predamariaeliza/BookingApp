@@ -35,5 +35,8 @@ namespace BookingApp.Domain.Entities
 
         [ValidateNever] // la crearea unei Proprietati, nu se va verifica valididatea conditiei urmatoare
         public IEnumerable<Amenity> PropertyAmenity { get; set; }
+
+        [NotMapped]
+        public bool IsAvailable { get; set; } = true;
     }
 }

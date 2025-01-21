@@ -26,6 +26,21 @@ namespace BookingAppWeb.Controllers
             return View(homeVM);
         }
 
+        [HttpPost]
+        public IActionResult Index(HomeVM homeVM)
+        {
+            homeVM.PropertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity");
+            foreach (var property in homeVM.PropertiesList)
+            {
+                if(property.Id % 2 == 0)
+                {
+                    property.IsAvailable = false;
+                }
+            }
+
+            return View(homeVM);
+        }
+
         public IActionResult Privacy()
         {
             return View();
