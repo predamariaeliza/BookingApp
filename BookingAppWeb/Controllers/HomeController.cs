@@ -41,6 +41,27 @@ namespace BookingAppWeb.Controllers
             return View(homeVM);
         }
 
+        public IActionResult GetPropertiesByDate(int nights, DateOnly checkInDate)
+        {
+            var propertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
+            foreach (var property in propertiesList)
+            {
+                if (property.Id % 2 == 0)
+                {
+                    property.IsAvailable = false;
+                }
+            }
+
+            HomeVM homeVM = new()
+            {
+                CheckInDate = checkInDate,
+                PropertiesList = propertiesList,
+                Nights = nights
+            };
+
+            return PartialView("_PropertyList",homeVM);
+        }
+
         public IActionResult Privacy()
         {
             return View();
