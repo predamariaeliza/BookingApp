@@ -59,7 +59,7 @@ namespace BookingAppWeb.Controllers
                 Nights = nights
             };
 
-            return View(homeVM);
+            return PartialView("_PropertyList",homeVM);
         }
 
         public IActionResult Privacy()
