@@ -30,21 +30,16 @@ namespace BookingAppWeb.Controllers
         public IActionResult Index(HomeVM homeVM)
         {
             homeVM.PropertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity");
-            foreach (var property in homeVM.PropertiesList)
-            {
-                if(property.Id % 2 == 0)
-                {
-                    property.IsAvailable = false;
-                }
-            }
-
             return View(homeVM);
         }
 
         public IActionResult GetPropertiesByDate(int nights, DateOnly checkInDate)
         {
-            var propertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
-            foreach (var property in propertiesList)
+            // se poate scoate oricand, e un delay pentru a se vedea Loading Page
+            Thread.Sleep(2000);
+            
+            var propertyList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
+            foreach (var property in propertyList)
             {
                 if (property.Id % 2 == 0)
                 {
@@ -55,7 +50,7 @@ namespace BookingAppWeb.Controllers
             HomeVM homeVM = new()
             {
                 CheckInDate = checkInDate,
-                PropertiesList = propertiesList,
+                PropertiesList = propertyList,
                 Nights = nights
             };
 
