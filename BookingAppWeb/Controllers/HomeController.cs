@@ -35,6 +35,9 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult GetPropertiesByDate(int nights, DateOnly checkInDate)
         {
+            // se poate scoate oricand, e un delay pentru a se vedea Loading Page
+            Thread.Sleep(2000);
+            
             var propertyList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
             foreach (var property in propertyList)
             {
