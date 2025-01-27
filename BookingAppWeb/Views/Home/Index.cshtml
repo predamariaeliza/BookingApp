@@ -24,9 +24,7 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-    <form method="post" style="background-color:black"
-          asp-action="GetPropertiesByDate" data-ajax-method ="post"
-    data-ajax ="true" data-ajax-mode="replace" data-ajax-update="#PropertiesList">
+    <form method="post" style="background-color:black" asp-action="GetPropertiesByDate">
         <div class="row p-0 mx-0 py-4">
 
             <div class="col-12 col-md-5  offset-md-1 pl-2  pr-2 pr-md-0">
@@ -39,8 +37,8 @@
             <div class="col-8 col-md-3 pl-2 pr-2">
                 <div class="form-group">
                     <label>Number of nights</label>
-                    <select class="form-select">
-                        @for(var i=1; i< 31; i++)
+                    <select class="form-select" asp-for="Nights">
+                        @for(var i=1; i< 11; i++)
                         {
                             <option value="@i">@i</option>
                         }
@@ -50,7 +48,7 @@
 
             <div class="col-4 col-md-2 pt-4 pr-2">
                 <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-block">
+                    <button id="checkAvailabilityButton" type="button" onclick="fnLoadPropertyList()" class="btn btn-success btn-block">
                         <i class="bi bi-search"></i>  &nbsp; Check Availability
                     </button>
 
@@ -59,6 +57,29 @@
 
         </div>
 
-        <partial name="_PropertyList" model ="Model"></partial>
+        <partial name="_PropertyList" model ="Model"/>
     </form>
 </div>
+
+@section scripts {
+    <script>
+            document.getElementById('checkAvailabilityButton').addEventListener('click', function() {
+            var objData = {
+                checkInDate: $("#CheckInDate").val(),
+                nights: $("#Nights").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                data: objData,
+                url: "@Url.Action("GetPropertiesByDate", "Home")",
+                success: function(data) {
+                    $("#PropertiesList").empty();
+                    $("#PropertiesList").html(data);
+                }
+            });
+        });
+
+
+    </script>
+}
