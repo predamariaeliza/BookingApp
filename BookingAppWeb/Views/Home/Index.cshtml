@@ -64,6 +64,7 @@
 @section scripts {
     <script>
             document.getElementById('checkAvailabilityButton').addEventListener('click', function() {
+            $('.spinner').show();
             var objData = {
                 checkInDate: $("#CheckInDate").val(),
                 nights: $("#Nights").val()
@@ -73,10 +74,23 @@
                 type: "POST",
                 data: objData,
                 url: "@Url.Action("GetPropertiesByDate", "Home")",
-                success: function(data) {
+                success: function(data) 
+                {
                     $("#PropertiesList").empty();
                     $("#PropertiesList").html(data);
+                    $('.spinner').hide();
+                },
+                failure: function(response)
+                {
+                    $('.spinner').hide();
+                    alert(response.responseText);
+                },
+                error: function(response)
+                {
+                    $('.spinner').hide();
+                    alert(response.responseText);
                 }
+                
             });
         });
 
