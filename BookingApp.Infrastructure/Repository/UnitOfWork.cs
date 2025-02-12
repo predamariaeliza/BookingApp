@@ -9,6 +9,7 @@ namespace BookingApp.Infrastructure.Repository
         public IAmenityRepository Amenity { get; private set; }
         public IPropertyRepository Property { get; private set; }
         public IPropertyNumberRepository PropertyNumber { get; private set; }
+        public IBookingRepository Booking { get; private set; }
 
         public UnitOfWork(DataContext dbContext)
         {
@@ -16,6 +17,7 @@ namespace BookingApp.Infrastructure.Repository
             Amenity = new AmenityRepository(_dbContext);
             Property = new PropertyRepository(_dbContext);
             PropertyNumber = new PropertyNumberRepository(_dbContext);
+            Booking = new BookingRepository(_dbContext);
         }
 
         public void Save()

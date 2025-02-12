@@ -5,6 +5,7 @@
         IPropertyRepository Property { get; }
         IPropertyNumberRepository PropertyNumber { get; }
         IAmenityRepository Amenity { get; }
+        IBookingRepository Booking { get; }
         void Save();
     }
 }

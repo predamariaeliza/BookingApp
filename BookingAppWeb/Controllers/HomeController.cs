@@ -27,11 +27,7 @@ namespace BookingAppWeb.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(HomeVM homeVM)
-        {
-            homeVM.PropertiesList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity");
-            return View(homeVM);
-        }
+        
 
         public IActionResult GetPropertiesByDate(int nights, DateOnly checkInDate)
         {
