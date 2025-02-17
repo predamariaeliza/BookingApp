@@ -12,15 +12,19 @@ namespace BookingAppWeb.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult FinalizeBooking(int propertyId, DateOnly checkInDate, int nights)
+        public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
         {
+            if (!DateOnly.TryParse(checkInDate, out DateOnly parsedDate))
+            {
+                parsedDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
+            }
             Booking booking = new()
             {
                 PropertyId = propertyId,
                 Property = _unitOfWork.Property.Get(u => u.Id == propertyId, includeProperties: "PropertyAmenity"),
-                CheckInDate = checkInDate,
+                CheckInDate = parsedDate,
                 Nights = nights,
-                CheckOutDate = checkInDate.AddDays(nights),
+                CheckOutDate = parsedDate.AddDays(nights),
             };
 
             return View(booking);

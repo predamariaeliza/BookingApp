@@ -31,12 +31,19 @@
                             {
                                 if (property.IsAvailable)
                                 {
-                                    <a class="btn btn-success form-control btn-block">
+                                    @* buton booking *@
+                                    <a asp-controller="Booking" asp-action ="FinalizeBooking" 
+                                    asp-route-propertyId="@property.Id"
+                                    asp-route-checkInDate="@Model.CheckInDate"
+                                    asp-route-nights="@Model.Nights"
+                                    bind="@Model.CheckInDate" bind:format="dd-MM-yyyy"
+                                    class="btn btn-success form-control btn-block">
                                         Book
                                     </a>
                                 }
                                 else
                                 {
+                                    @* buton sold out *@
                                     <a class="btn btn-outline-danger disabled form-control btn-block">
                                         Sold Out
                                     </a>

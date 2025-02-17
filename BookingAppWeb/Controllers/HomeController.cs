@@ -27,13 +27,17 @@ namespace BookingAppWeb.Controllers
         }
 
         [HttpPost]
-        
-
         public IActionResult GetPropertiesByDate(int nights, DateOnly checkInDate)
         {
             // se poate scoate oricand, e un delay pentru a se vedea Loading Page
             Thread.Sleep(2000);
-            
+
+            // Ensure that checkInDate is valid (DateOnly does not allow nulls)
+            if (checkInDate == default)
+            {
+                checkInDate = DateOnly.FromDateTime(DateTime.Now); // Default to today if not provided
+            }
+
             var propertyList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
             foreach (var property in propertyList)
             {
