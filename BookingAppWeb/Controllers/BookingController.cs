@@ -18,6 +18,7 @@ namespace BookingAppWeb.Controllers
             {
                 parsedDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
             }
+
             Booking booking = new()
             {
                 PropertyId = propertyId,
@@ -26,6 +27,7 @@ namespace BookingAppWeb.Controllers
                 Nights = nights,
                 CheckOutDate = parsedDate.AddDays(nights),
             };
+            booking.TotalCost = booking.Property.Price * nights;
 
             return View(booking);
         }
