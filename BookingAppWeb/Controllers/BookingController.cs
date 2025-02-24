@@ -1,6 +1,9 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace BookingAppWeb.Controllers
 {
@@ -12,20 +15,27 @@ namespace BookingAppWeb.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
+
+
+        [Authorize]
+        public IActionResult FinalizeBooking(int propertyId, DateOnly checkInDate, int nights)
         {
-            if (!DateOnly.TryParse(checkInDate, out DateOnly parsedDate))
-            {
-                parsedDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
-            }
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ApplicationUser user = _unitOfWork.User.Get(u => u.Id == userId);
 
             Booking booking = new()
             {
                 PropertyId = propertyId,
                 Property = _unitOfWork.Property.Get(u => u.Id == propertyId, includeProperties: "PropertyAmenity"),
-                CheckInDate = parsedDate,
+                CheckInDate = checkInDate,
                 Nights = nights,
-                CheckOutDate = parsedDate.AddDays(nights),
+                CheckOutDate = checkInDate.AddDays(nights),
+                UserId = userId,
+                Phone = user.PhoneNumber,
+                Email = user.Email,
+                Name = user.Name
             };
             booking.TotalCost = booking.Property.Price * nights;
 
