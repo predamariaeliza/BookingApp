@@ -1,4 +1,5 @@
 ﻿using BookingApp.Application.Common.Interfaces;
+using BookingApp.Application.Common.Utility;
 using BookingApp.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,8 +15,6 @@ namespace BookingAppWeb.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
-
 
         [Authorize]
         public IActionResult FinalizeBooking(int propertyId, DateOnly checkInDate, int nights)
@@ -40,6 +39,28 @@ namespace BookingAppWeb.Controllers
             booking.TotalCost = booking.Property.Price * nights;
 
             return View(booking);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult FinalizeBooking(Booking booking)
+        {
+            var property = _unitOfWork.Property.Get(u => u.Id == booking.PropertyId);
+            booking.TotalCost = booking.Property.Price * booking.Nights;
+
+            booking.Status = StaticDetails.StatusPending;
+            booking.BookingDate = DateTime.Now;
+
+            _unitOfWork.Booking.Create(booking);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(BookingConfirmation), new { bookingId = booking.Id });
+        }
+
+        [Authorize]
+        public IActionResult BookingConfirmation(int bookingId)
+        {
+            return View(bookingId);
         }
     }
 }
