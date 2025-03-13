@@ -1,6 +1,10 @@
 ﻿using BookingApp.Application.Common.Interfaces;
+using BookingApp.Application.Common.Utility;
 using BookingApp.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
 
 namespace BookingAppWeb.Controllers
 {
@@ -12,24 +16,56 @@ namespace BookingAppWeb.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Authorize]
         public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
         {
-            if (!DateOnly.TryParse(checkInDate, out DateOnly parsedDate))
+            if (!DateOnly.TryParse(checkInDate, out DateOnly parsedCheckInDate))
             {
-                parsedDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
+                parsedCheckInDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
             }
+
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            ApplicationUser user = _unitOfWork.User.Get(u => u.Id == userId);
 
             Booking booking = new()
             {
                 PropertyId = propertyId,
                 Property = _unitOfWork.Property.Get(u => u.Id == propertyId, includeProperties: "PropertyAmenity"),
-                CheckInDate = parsedDate,
+                CheckInDate = parsedCheckInDate,
                 Nights = nights,
-                CheckOutDate = parsedDate.AddDays(nights),
+                CheckOutDate = parsedCheckInDate.AddDays(nights),
+                UserId = userId,
+                Phone = user.PhoneNumber,
+                Email = user.Email,
+                Name = user.Name
             };
             booking.TotalCost = booking.Property.Price * nights;
 
             return View(booking);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public IActionResult FinalizeBooking(Booking booking)
+        {
+            var property = _unitOfWork.Property.Get(u => u.Id == booking.PropertyId);
+            booking.TotalCost = property.Price * booking.Nights;
+
+            booking.Status = StaticDetails.StatusPending;
+            booking.BookingDate = DateTime.Now;
+
+            _unitOfWork.Booking.Create(booking);
+            _unitOfWork.Save();
+
+            return RedirectToAction(nameof(BookingConfirmation), new { bookingId = booking.Id });
+        }
+
+        [Authorize]
+        public IActionResult BookingConfirmation(int bookingId)
+        {
+            return View(bookingId);
         }
     }
 }

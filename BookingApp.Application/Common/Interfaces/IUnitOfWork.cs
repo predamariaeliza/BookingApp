@@ -6,6 +6,7 @@
         IPropertyNumberRepository PropertyNumber { get; }
         IAmenityRepository Amenity { get; }
         IBookingRepository Booking { get; }
+        IApplicationUserRepository User { get; }
         void Save();
     }
 }
