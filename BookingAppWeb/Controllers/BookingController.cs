@@ -17,8 +17,13 @@ namespace BookingAppWeb.Controllers
         }
 
         [Authorize]
-        public IActionResult FinalizeBooking(int propertyId, DateOnly checkInDate, int nights)
+        public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
         {
+            if (!DateOnly.TryParse(checkInDate, out DateOnly parsedCheckInDate))
+            {
+                parsedCheckInDate = DateOnly.FromDateTime(DateTime.Now); // Fallback if parsing fails
+            }
+
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
@@ -28,9 +33,9 @@ namespace BookingAppWeb.Controllers
             {
                 PropertyId = propertyId,
                 Property = _unitOfWork.Property.Get(u => u.Id == propertyId, includeProperties: "PropertyAmenity"),
-                CheckInDate = checkInDate,
+                CheckInDate = parsedCheckInDate,
                 Nights = nights,
-                CheckOutDate = checkInDate.AddDays(nights),
+                CheckOutDate = parsedCheckInDate.AddDays(nights),
                 UserId = userId,
                 Phone = user.PhoneNumber,
                 Email = user.Email,
@@ -46,7 +51,7 @@ namespace BookingAppWeb.Controllers
         public IActionResult FinalizeBooking(Booking booking)
         {
             var property = _unitOfWork.Property.Get(u => u.Id == booking.PropertyId);
-            booking.TotalCost = booking.Property.Price * booking.Nights;
+            booking.TotalCost = property.Price * booking.Nights;
 
             booking.Status = StaticDetails.StatusPending;
             booking.BookingDate = DateTime.Now;
