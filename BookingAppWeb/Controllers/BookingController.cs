@@ -66,6 +66,22 @@ namespace BookingAppWeb.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
+            Booking booking = _unitOfWork.Booking.Get(b => b.Id == bookingId, includeProperties: "Property");
+
+            if (booking.Status == StaticDetails.StatusPending)
+            {
+                // this is a pending order, we need to confirm if the payment was successful
+                var service = new SessionService();
+                Session session = service.Get(booking.StripeSessionId);
+
+                //if the payment was successful, we update the booking status
+                if (session.PaymentStatus == "paid")
+                {
+                    _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusApproved);
+                    _unitOfWork.Booking.UpdateStripePaymentId(booking.Id, session.Id, session.PaymentIntentId);
+                    _unitOfWork.Save();
+                }
+            }
             return View(bookingId);
         }
 
