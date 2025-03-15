@@ -90,8 +90,30 @@ namespace BookingAppWeb.Controllers
             return View(bookingId);
         }
 
+        #region API Calls
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll()
+        {
+            IEnumerable<Booking> objBookings;
+            if (User.IsInRole(StaticDetails.Role_Admin))
+            {
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "Property,User");
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "Property,User");
+            }
+            return Json(new { data = objBookings });
+        }
+        #endregion
 
         #region private
+
         private StatusCodeResult StripeSession(Booking booking, Property property)
         {
             var domain = Request.Scheme + "://" + Request.Host.Value; //adresa localhost
