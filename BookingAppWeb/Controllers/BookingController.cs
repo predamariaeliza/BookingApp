@@ -18,6 +18,11 @@ namespace BookingAppWeb.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
         [Authorize]
         public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
         {
