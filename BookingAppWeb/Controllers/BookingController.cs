@@ -18,6 +18,7 @@ namespace BookingAppWeb.Controllers
             _unitOfWork = unitOfWork;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             return View();
@@ -71,7 +72,7 @@ namespace BookingAppWeb.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
-            Booking booking = _unitOfWork.Booking.Get(b => b.Id == bookingId, includeProperties: "Property");
+            Booking booking = _unitOfWork.Booking.Get(b => b.Id == bookingId, includeProperties: "User,Property");
 
             if (booking.Status == StaticDetails.StatusPending)
             {
@@ -140,15 +141,16 @@ namespace BookingAppWeb.Controllers
 
             if (User.IsInRole(StaticDetails.Role_Admin))
             {
-                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "Property,User");
+                objBookings = _unitOfWork.Booking.GetAll();
             }
             else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "Property,User");
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId);
             }
+            objBookings = _unitOfWork.Booking.GetAll();
             return Json(new { data = objBookings });
 
         }
