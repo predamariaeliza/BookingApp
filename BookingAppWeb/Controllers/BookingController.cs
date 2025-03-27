@@ -130,5 +130,29 @@ namespace BookingAppWeb.Controllers
         }
 
         #endregion
+
+        #region API calls
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll()
+        {
+            IEnumerable<Booking> objBookings;
+
+            if (User.IsInRole(StaticDetails.Role_Admin))
+            {
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "Property,User");
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "Property,User");
+            }
+            return Json(new { data = objBookings });
+
+        }
+
+        #endregion
     }
 }
