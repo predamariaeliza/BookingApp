@@ -19,6 +19,12 @@ namespace BookingAppWeb.Controllers
         }
 
         [Authorize]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize]
         public IActionResult FinalizeBooking(int propertyId, string checkInDate, int nights)
         {
             if (!DateOnly.TryParse(checkInDate, out DateOnly parsedCheckInDate))
@@ -66,7 +72,7 @@ namespace BookingAppWeb.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
-            Booking booking = _unitOfWork.Booking.Get(b => b.Id == bookingId, includeProperties: "Property");
+            Booking booking = _unitOfWork.Booking.Get(b => b.Id == bookingId, includeProperties: "User,Property");
 
             if (booking.Status == StaticDetails.StatusPending)
             {
@@ -122,6 +128,31 @@ namespace BookingAppWeb.Controllers
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
+        }
+
+        #endregion
+
+        #region API calls
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll()
+        {
+            IEnumerable<Booking> objBookings;
+
+            if (User.IsInRole(StaticDetails.Role_Admin))
+            {
+                objBookings = _unitOfWork.Booking.GetAll();
+            }
+            else
+            {
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId);
+            }
+            //objBookings = _unitOfWork.Booking.GetAll();
+            return Json(new { data = objBookings });
+
         }
 
         #endregion

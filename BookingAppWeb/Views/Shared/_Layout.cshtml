@@ -8,16 +8,19 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="~/BookingAppWeb.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/spinner.css"/>
+    <link rel="stylesheet" href="~/css/spinner.css" />
     @* added Toastr css => mesaje/notificari UI*@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.css" integrity="sha512-3pIirOrwegjM6erE5gPSwkUzO+3cTjpnV9lexlNZqvupR64iZBnOOTiiLPb9M36zpMScbmUNIcHUqKD47M719g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    @* added datatables.net*@
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
             <div class="container-fluid">
-                    @* imaginea siglei site-ului*@
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/site-logo.png" style="width:100px"/></a>
+                @* imaginea siglei site-ului*@
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="~/images/site-logo.png" style="width:100px" /></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -34,13 +37,16 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a class="dropdown-item" asp-controller="Property" asp-action="Index">Property</a>
-                                    </li>
+                                </li>
                                 <li>
                                     <a class="dropdown-item" asp-controller="PropertyNumber" asp-action="Index">PropertyNumber</a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item" asp-controller="Amenity" asp-action="Index">Amenity</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-controller="Booking" asp-action="Index">Booking</a>
                                 </li>
                             </ul>
                         </li>
@@ -57,7 +63,7 @@
             @*Loading - Spinner - Rotita*@
             <div class="loading spinner" style="display:none;"></div>
 
-            <partial name="_Notification"/>
+            <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
@@ -73,6 +79,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.1/js/bootstrap.bundle.min.js" integrity="sha512-sH8JPhKJUeA9PWk3eOcOl8U+lfZTgtBXD41q6cO/slwxGHCxKcW45K4oPCUhHG7NMB4mbKEddVmPuTXtpbCbFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" asp-append-version="true"></script>
     @* <script src="~/js/jquery.unobtrusive-ajax.min.js"></script> *@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
