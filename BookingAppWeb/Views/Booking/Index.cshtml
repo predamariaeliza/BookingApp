@@ -1,5 +1,36 @@
 ﻿@using BookingApp.Application.Common.Utility
 
+@* Asignare valori dinamice *@
+@{
+    var status = Context.Request.Query["status"];
+    var approved = "";
+    var pending = "";
+    var checkedIn = "";
+    var completed = "";
+    var cancelled = "";
+
+    switch(status)
+    {
+        case StaticDetails.StatusApproved:
+            approved = "text-white bg-success";
+            break;
+        case StaticDetails.StatusPending:
+            pending = "text-white bg-success";
+            break;
+        case StaticDetails.StatusCheckedIn:
+            checkedIn = "text-white bg-success";
+            break;
+        case StaticDetails.StatusCompleted:
+            completed = "text-white bg-success";
+            break;
+        case StaticDetails.StatusCancelled:
+            cancelled = "text-white bg-success";
+            break;
+        default:
+            break;
+    }
+}
+
 <div class="w-100 card border-0 p-4">
     <div class="card-header bg-success bg-gradient m-lg-0 py-3">
         <div class="row">
@@ -13,27 +44,27 @@
             <ul class="list-group list-group-horizontal-sm">
                 <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
                 asp-route-status="@StaticDetails.StatusPending">
-                    <li class="list-group-item"> @StaticDetails.StatusPending </li>
+                    <li class="list-group-item @pending"> @StaticDetails.StatusPending </li>
                 </a>
 
                 <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
                    asp-route-status="@StaticDetails.StatusApproved">
-                <li class="list-group-item"> @StaticDetails.StatusApproved </li>
+                <li class="list-group-item @approved"> @StaticDetails.StatusApproved </li>
                 </a>
 
                 <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
                    asp-route-status="@StaticDetails.StatusCheckedIn">
-                <li class="list-group-item"> @StaticDetails.StatusCheckedIn </li>
+                <li class="list-group-item @checkedIn"> @StaticDetails.StatusCheckedIn </li>
                 </a>
 
                 <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
                    asp-route-status="@StaticDetails.StatusCompleted">
-                <li class="list-group-item"> @StaticDetails.StatusCompleted </li>
+                <li class="list-group-item @completed"> @StaticDetails.StatusCompleted </li>
                 </a>
 
                 <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
                    asp-route-status="@StaticDetails.StatusCancelled">
-                <li class="list-group-item"> @StaticDetails.StatusCancelled </li>
+                <li class="list-group-item @cancelled"> @StaticDetails.StatusCancelled </li>
                 </a>
 
             </ul>
