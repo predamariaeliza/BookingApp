@@ -150,7 +150,7 @@ namespace BookingAppWeb.Controllers
 
                 objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId);
             }
-            objBookings = _unitOfWork.Booking.GetAll();
+            //objBookings = _unitOfWork.Booking.GetAll();
             return Json(new { data = objBookings });
 
         }
