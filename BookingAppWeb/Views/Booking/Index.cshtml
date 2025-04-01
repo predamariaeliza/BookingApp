@@ -1,4 +1,5 @@
-﻿
+﻿@using BookingApp.Application.Common.Utility
+
 <div class="w-100 card border-0 p-4">
     <div class="card-header bg-success bg-gradient m-lg-0 py-3">
         <div class="row">
@@ -8,6 +9,35 @@
         </div>
     </div>
     <div class="card-body border p-4">
+        <div class="d-flex justify-content-end pb-4 pt-2">
+            <ul class="list-group list-group-horizontal-sm">
+                <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
+                asp-route-status="@StaticDetails.StatusPending">
+                    <li class="list-group-item"> @StaticDetails.StatusPending </li>
+                </a>
+
+                <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
+                   asp-route-status="@StaticDetails.StatusApproved">
+                <li class="list-group-item"> @StaticDetails.StatusApproved </li>
+                </a>
+
+                <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
+                   asp-route-status="@StaticDetails.StatusCheckedIn">
+                <li class="list-group-item"> @StaticDetails.StatusCheckedIn </li>
+                </a>
+
+                <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
+                   asp-route-status="@StaticDetails.StatusCompleted">
+                <li class="list-group-item"> @StaticDetails.StatusCompleted </li>
+                </a>
+
+                <a style="text-decoration:none;" asp-controller="Booking" asp-action="Index"
+                   asp-route-status="@StaticDetails.StatusCancelled">
+                <li class="list-group-item"> @StaticDetails.StatusCancelled </li>
+                </a>
+
+            </ul>
+        </div>
         <table id="tblBookings" class="table table-bordered table-striped">
             <thead>
                 @* Numele coloanelor din tabel*@
