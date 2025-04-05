@@ -91,6 +91,13 @@ namespace BookingAppWeb.Controllers
             return View(bookingId);
         }
 
+        [Authorize]
+        public IActionResult BookingDetails(int bookingId)
+        {
+            Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "Property");
+
+            return View(bookingFromDb);
+        }
 
         #region private
         private StatusCodeResult StripeSession(Booking booking, Property property)
