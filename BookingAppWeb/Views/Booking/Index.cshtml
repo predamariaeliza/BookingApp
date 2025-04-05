@@ -1,5 +1,4 @@
-﻿@using BookingApp.Application.Common.Utility
-
+﻿
 @* Asignare valori dinamice *@
 @{
     var status = Context.Request.Query["status"];
@@ -11,11 +10,11 @@
 
     switch(status)
     {
-        case StaticDetails.StatusApproved:
-            approved = "text-white bg-success";
-            break;
         case StaticDetails.StatusPending:
             pending = "text-white bg-success";
+            break;
+        case StaticDetails.StatusApproved:
+            approved = "text-white bg-success";
             break;
         case StaticDetails.StatusCheckedIn:
             checkedIn = "text-white bg-success";
@@ -35,7 +34,7 @@
     <div class="card-header bg-success bg-gradient m-lg-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class"text-white py-2">Booking List</h2>
+                <h2 class="text-white py-2">Booking List</h2>
             </div>
         </div>
     </div>

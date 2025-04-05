@@ -46,7 +46,7 @@
                                     <a class="dropdown-item" asp-controller="Amenity" asp-action="Index">Amenity</a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-controller="Booking" asp-action="Index">Booking</a>
+                                    <a class="dropdown-item" asp-controller="Booking" asp-action="Index" asp-route-status="@StaticDetails.StatusApproved">Booking</a>
                                 </li>
                             </ul>
                         </li>
@@ -81,6 +81,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="//cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" asp-append-version="true"></script>
     @* <script src="~/js/jquery.unobtrusive-ajax.min.js"></script> *@
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>
