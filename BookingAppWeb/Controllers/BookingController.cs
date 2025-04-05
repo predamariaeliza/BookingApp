@@ -91,6 +91,13 @@ namespace BookingAppWeb.Controllers
             return View(bookingId);
         }
 
+        [Authorize]
+        public IActionResult BookingDetails(int bookingId)
+        {
+            Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "Property");
+
+            return View(bookingFromDb);
+        }
 
         #region private
         private StatusCodeResult StripeSession(Booking booking, Property property)
@@ -135,22 +142,25 @@ namespace BookingAppWeb.Controllers
         #region API calls
         [HttpGet]
         [Authorize]
-        public IActionResult GetAll()
+        public IActionResult GetAll([Bind(Prefix = "status")] string status)
         {
             IEnumerable<Booking> objBookings;
 
             if (User.IsInRole(StaticDetails.Role_Admin))
             {
-                objBookings = _unitOfWork.Booking.GetAll();
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties:"User,Property");
             }
             else
             {
                 var claimsIdentity = (ClaimsIdentity)User.Identity;
                 var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId);
+                objBookings = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Property");
             }
-            //objBookings = _unitOfWork.Booking.GetAll();
+            if(!string.IsNullOrEmpty(status))
+            {
+                objBookings = objBookings.Where(u => u.Status.ToLower().Equals(status.ToLower()));
+            }
             return Json(new { data = objBookings });
 
         }
