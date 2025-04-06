@@ -64,6 +64,22 @@ namespace BookingAppWeb.Controllers
             booking.Status = StaticDetails.StatusPending;
             booking.BookingDate = DateTime.Now;
 
+            var propertyNumberList = _unitOfWork.PropertyNumber.GetAll().ToList();
+            var bookedProperties = _unitOfWork.Booking.GetAll(u => u.Status == StaticDetails.StatusApproved || u.Status == StaticDetails.StatusCheckedIn).ToList();
+
+            int roomAvailable = StaticDetails.PropertyRoomsAvailable_Count(property.Id, propertyNumberList, booking.CheckInDate, booking.Nights, bookedProperties);
+
+            if(roomAvailable == 0)
+            {
+                TempData["error"] = "Room has been sold out!";
+                return RedirectToAction(nameof(FinalizeBooking), new
+                {
+                    propertyId = booking.PropertyId,
+                    checkInDate = booking.CheckInDate,//.ToString("yyyy-MM-dd"),
+                    nights = booking.Nights
+                });
+            }
+
             _unitOfWork.Booking.Create(booking);
             _unitOfWork.Save();
             return StripeSession(booking, property);
