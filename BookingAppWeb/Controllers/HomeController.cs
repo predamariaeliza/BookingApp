@@ -1,4 +1,5 @@
 using BookingApp.Application.Common.Interfaces;
+using BookingApp.Application.Common.Utility;
 using BookingAppWeb.Models;
 using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -39,12 +40,18 @@ namespace BookingAppWeb.Controllers
             }
 
             var propertyList = _unitOfWork.Property.GetAll(includeProperties: "PropertyAmenity").ToList();
+            var propertyNumberList = _unitOfWork.PropertyNumber.GetAll().ToList();
+            
+            // we do not care if a booking is completed, cancelled or any other status
+            // we only care about the bookings that are approved or checked in
+            var bookedProperties = _unitOfWork.Booking.GetAll(u => u.Status == StaticDetails.StatusApproved || u.Status == StaticDetails.StatusCheckedIn).ToList();
+
             foreach (var property in propertyList)
             {
-                if (property.Id % 2 == 0)
-                {
-                    property.IsAvailable = false;
-                }
+                //based on that, we will know how may propreties are available for the complete night that user wants to stay.
+                int roomAvailable = StaticDetails.PropertyRoomsAvailable_Count(property.Id, propertyNumberList, checkInDate, nights, bookedProperties);
+
+                property.IsAvailable = roomAvailable > 0 ? true : false;
             }
 
             HomeVM homeVM = new()
