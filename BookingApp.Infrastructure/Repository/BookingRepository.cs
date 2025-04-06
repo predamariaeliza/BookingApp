@@ -37,7 +37,7 @@ namespace BookingApp.Infrastructure.Repository
                 {
                     booking.ActualCheckInDate = DateTime.Now;
                 }
-                _dbContext.SaveChanges();
+                //_dbContext.SaveChanges();
             }
         }
 

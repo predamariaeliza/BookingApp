@@ -46,7 +46,7 @@ namespace BookingApp.Infrastructure.Repository
             {
                 query = query.Where(filter);
             }
-            if (!string.IsNullOrEmpty(includeProperties))
+             if (!string.IsNullOrEmpty(includeProperties))
             {
                 //Property, PropertyNumber -- case sensitive
                 foreach (var includeProp in includeProperties.Split([','], StringSplitOptions.RemoveEmptyEntries))
@@ -56,7 +56,7 @@ namespace BookingApp.Infrastructure.Repository
             }
 
             // return query.ToList()
-            return [.. query];
+            return query.ToList();
         }
 
         public void Delete(T entity)

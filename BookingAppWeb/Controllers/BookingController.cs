@@ -147,7 +147,7 @@ namespace BookingAppWeb.Controllers
 
         private List<int> AssignAvailablePropertyNumberByProperty(int propertyId)
         {
-            List<int> availablePropertyNumbers = new List<int>();
+            List<int> availablePropertyNumbers = new();
             var propertyNumbers = _unitOfWork.PropertyNumber.GetAll(u => u.PropertyId == propertyId);
 
             var checkedInProperty = _unitOfWork.Booking.GetAll(u => u.PropertyId == propertyId || u.Status == StaticDetails.StatusCheckedIn)
@@ -163,6 +163,7 @@ namespace BookingAppWeb.Controllers
 
             return availablePropertyNumbers;
         }
+
 
         #endregion
 

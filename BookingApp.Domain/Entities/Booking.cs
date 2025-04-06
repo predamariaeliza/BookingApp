@@ -45,6 +45,7 @@ namespace BookingApp.Domain.Entities
 
         public int PropertyNumber { get; set; }
 
+        [NotMapped]
         public List<PropertyNumber> PropertyNumbers { get; set; }
 
 
