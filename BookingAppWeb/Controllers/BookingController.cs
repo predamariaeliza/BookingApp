@@ -107,6 +107,16 @@ namespace BookingAppWeb.Controllers
             return View(bookingFromDb);
         }
 
+        [HttpPost]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
+        public IActionResult CheckIn(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusCheckedIn, booking.PropertyNumber);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Updated successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+        }
+
         #region private
         private StatusCodeResult StripeSession(Booking booking, Property property)
         {
