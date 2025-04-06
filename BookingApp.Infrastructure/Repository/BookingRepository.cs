@@ -18,7 +18,7 @@ namespace BookingApp.Infrastructure.Repository
             _dbContext.Bookings.Update(entity);
         }
 
-        public void UpdateStatus(int bookingId, string bookingStatus)
+        public void UpdateStatus(int bookingId, string bookingStatus, int propertyNumber = 0)
         {
             var booking = _dbContext.Bookings.FirstOrDefault(b => b.Id == bookingId);
             if(booking != null)
@@ -28,6 +28,7 @@ namespace BookingApp.Infrastructure.Repository
                 //if the user is checked in
                 if(bookingStatus == StaticDetails.StatusCheckedIn)
                 {
+                    booking.PropertyNumber = propertyNumber;
                     booking.ActualCheckInDate = DateTime.Now;
                 }
 
@@ -36,7 +37,7 @@ namespace BookingApp.Infrastructure.Repository
                 {
                     booking.ActualCheckInDate = DateTime.Now;
                 }
-                _dbContext.SaveChanges();
+                //_dbContext.SaveChanges();
             }
         }
 

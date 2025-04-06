@@ -87,6 +87,21 @@
                         <label class="text-warning">Actual Check-out Date</label>
                         <input asp-for="ActualCheckOutDate" disabled class="form-control" />
                     </div>
+
+                    @if(Model.Status == StaticDetails.StatusApproved && User.IsInRole(StaticDetails.Role_Admin))
+                    {
+                        <div class="form-group pt-2 col-6">
+                            <label class="text-danger" asp-for="PropertyNumber"></label>
+                                <select class="form-select" asp-for="PropertyNumber">
+                                    @foreach(var item in Model.PropertyNumbers)
+                                    {
+                                        <option value="@item.PropertyNr">@item.PropertyNr</option>
+                                    }
+                                </select>
+                        
+                        </div>
+                    }
+
                     @if(Model.IsPaymentSuccessful && User.IsInRole(StaticDetails.Role_Admin))
                     {
                         <div class="form-group pt-2 col-6">
