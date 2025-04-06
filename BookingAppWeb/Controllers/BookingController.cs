@@ -96,6 +96,14 @@ namespace BookingAppWeb.Controllers
         {
             Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "Property");
 
+            if(bookingFromDb.PropertyNumber == 0 && bookingFromDb.Status == StaticDetails.StatusApproved)
+            {
+                // we need to assign a property number to the booking
+                var availablePropertyNumber = AssignAvailablePropertyNumberByProperty(bookingFromDb.PropertyId);
+                bookingFromDb.PropertyNumbers = _unitOfWork.PropertyNumber.GetAll(u => u.PropertyId == bookingFromDb.PropertyId
+                && availablePropertyNumber.Any(x => x == u.PropertyNr)).ToList();
+            }
+
             return View(bookingFromDb);
         }
 
@@ -135,6 +143,25 @@ namespace BookingAppWeb.Controllers
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
+        }
+
+        private List<int> AssignAvailablePropertyNumberByProperty(int propertyId)
+        {
+            List<int> availablePropertyNumbers = new List<int>();
+            var propertyNumbers = _unitOfWork.PropertyNumber.GetAll(u => u.PropertyId == propertyId);
+
+            var checkedInProperty = _unitOfWork.Booking.GetAll(u => u.PropertyId == propertyId || u.Status == StaticDetails.StatusCheckedIn)
+                .Select(u => u.PropertyNumber);
+
+            foreach (var propertyNumber in propertyNumbers)
+            {
+                if(!checkedInProperty.Contains(propertyNumber.PropertyNr))
+                {
+                    availablePropertyNumbers.Add(propertyNumber.PropertyNr);
+                }
+            }
+
+            return availablePropertyNumbers;
         }
 
         #endregion
