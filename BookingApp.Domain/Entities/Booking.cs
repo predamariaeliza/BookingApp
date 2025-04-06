@@ -45,6 +45,8 @@ namespace BookingApp.Domain.Entities
 
         public int PropertyNumber { get; set; }
 
+        public List<PropertyNumber> PropertyNumbers { get; set; }
+
 
 
     }

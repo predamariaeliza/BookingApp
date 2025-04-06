@@ -83,7 +83,7 @@ namespace BookingAppWeb.Controllers
                 //if the payment was successful, we update the booking status
                 if (session.PaymentStatus == "paid")
                 {
-                    _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusApproved);
+                    _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusApproved, 0);
                     _unitOfWork.Booking.UpdateStripePaymentId(booking.Id, session.Id, session.PaymentIntentId);
                     _unitOfWork.Save();
                 }
