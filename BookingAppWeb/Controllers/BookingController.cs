@@ -117,6 +117,26 @@ namespace BookingAppWeb.Controllers
             return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
         }
 
+        [HttpPost]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
+        public IActionResult CheckOut(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusCompleted, booking.PropertyNumber);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Completed successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = StaticDetails.Role_Admin)]
+        public IActionResult CancelBooking(Booking booking)
+        {
+            _unitOfWork.Booking.UpdateStatus(booking.Id, StaticDetails.StatusCancelled, 0);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Cancelled successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = booking.Id });
+        }
+
         #region private
         private StatusCodeResult StripeSession(Booking booking, Property property)
         {
