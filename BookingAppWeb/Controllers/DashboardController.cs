@@ -1,5 +1,6 @@
 ﻿using BookingApp.Application.Common.Interfaces;
 using BookingApp.Application.Common.Utility;
+using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookingAppWeb.Controllers
@@ -30,6 +31,29 @@ namespace BookingAppWeb.Controllers
 
             var countByPreviousMonth = totalBookings.Count(u => u.BookingDate >= previousMonthStartDate
             && u.BookingDate <= currentMonthStartDate);
+
+            RadialBarChartVM radialBarChartVM = new();
+
+            int increaseDecreaseRatio = 100;
+
+            if(previousMonth != 0)
+            {
+                if (countByPreviousMonth == 0)
+                {
+                    increaseDecreaseRatio = countByCurrentMonth > 0 ? 100 : 0;
+                }
+                else
+                {
+                    increaseDecreaseRatio = Convert.ToInt32(((decimal)(countByCurrentMonth - countByPreviousMonth) / countByPreviousMonth) * 100);
+                }
+            }
+
+            radialBarChartVM.TotalCount = totalBookings.Count();
+            radialBarChartVM.CountInCurrentMonth = countByCurrentMonth;
+            radialBarChartVM.HasRatioIncreased = currentMonthStartDate > previousMonthStartDate;
+            radialBarChartVM.Series = new int[] { increaseDecreaseRatio };
+
+            return Json(radialBarChartVM);
 
 
         }
