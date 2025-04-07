@@ -1,3 +1,8 @@
-﻿@{
+﻿@if(User.IsInRole(StaticDetails.Role_Admin))
+{
+    Layout = "_LayoutAdmin";
+}
+else
+{
     Layout = "_Layout";
 }
