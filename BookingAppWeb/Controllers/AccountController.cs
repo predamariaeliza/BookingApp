@@ -156,20 +156,29 @@ namespace BookingAppWeb.Controllers
                 // daca rezultatul este un succes
                 if (result.Succeeded)
                 {
-                    // redirectionam catre:
-                    if (string.IsNullOrEmpty(loginVM.RedirectUrl))
+                    var user = await _userManager.FindByEmailAsync(loginVM.Email);
+                    if (await _userManager.IsInRoleAsync(user, StaticDetails.Role_Admin))
                     {
-                        // pagina de Home - daca nu exista redirectURL
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Dashboard");
                     }
                     else
                     {
-                        // Url - ul Redirectionat - daca exista redirectURL
-                        // LocalRedirect -> redirectionam mereu catre domeniul local
-                        // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
-                        // * (security measure)
-                        return LocalRedirect(loginVM.RedirectUrl);
+                        // redirectionam catre:
+                        if (string.IsNullOrEmpty(loginVM.RedirectUrl))
+                        {
+                            // pagina de Home - daca nu exista redirectURL
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            // Url - ul Redirectionat - daca exista redirectURL
+                            // LocalRedirect -> redirectionam mereu catre domeniul local
+                            // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
+                            // * (security measure)
+                            return LocalRedirect(loginVM.RedirectUrl);
+                        }
                     }
+
                 }
                 // daca rezultatul nu este un succes
                 // => nu vrem sa aratam utilizatorului eroarea
