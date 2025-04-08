@@ -83,6 +83,29 @@ namespace BookingAppWeb.Controllers
             return Json(pieChartVM);
         }
 
+        public async Task<IActionResult> GetMemberAdnBookingLineChartData()
+        {
+            var bookingData = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30)
+            && u.BookingDate.Date <= DateTime.Now)
+                .GroupBy(u => u.BookingDate.Date)
+                .Select(u => new
+                {
+                    Date = u.Key,
+                    NewBookingCount = u.Count()
+                });
+
+            var customerData = _unitOfWork.User.GetAll(u => u.CreatedAt >= DateTime.Now.AddDays(-30)
+            && u.CreatedAt.Date <= DateTime.Now)
+                .GroupBy(u => u.CreatedAt.Date)
+                .Select(u => new
+                {
+                    Date = u.Key,
+                    NewCustomerCount = u.Count()
+                });
+
+            return Json(bookingData);
+        }
+
         private static RadialBarChartVM GetRadialChartDataModel(int totalCount, double currentMothCount, double prevMonthCount)
         {
             RadialBarChartVM radialBarChartVM = new();
