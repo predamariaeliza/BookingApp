@@ -83,7 +83,7 @@ namespace BookingAppWeb.Controllers
             return Json(pieChartVM);
         }
 
-        public async Task<IActionResult> GetMemberAdnBookingLineChartData()
+        public async Task<IActionResult> GetMemberAndBookingLineChartData()
         {
             var bookingData = _unitOfWork.Booking.GetAll(u => u.BookingDate >= DateTime.Now.AddDays(-30)
             && u.BookingDate.Date <= DateTime.Now)
