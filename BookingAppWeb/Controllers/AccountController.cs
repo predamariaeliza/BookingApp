@@ -25,7 +25,7 @@ namespace BookingAppWeb.Controllers
 
         public IActionResult Login(string returnUrl=null)
         {
-            //if returnUrl !null => return content
+            //if returnUrl !null => return contentt
             returnUrl ??= Url.Content("~/");
 
             LoginVM loginVM = new()
