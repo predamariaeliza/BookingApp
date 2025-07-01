@@ -50,11 +50,21 @@
                             <button type="submit" class="w-100 btn btn-lg btn-outline-success">Register</button>
                         </div>
                     </form>
+
+                    <hr class="my-4" />
+
+                    <!-- Butonul pentru logare Google -->
+                    <form asp-controller="Account" asp-action="ExternalLogin" method="post">
+                        <input type="hidden" name="provider" value="Google" />
+                        <button type="submit" class="w-100 btn btn-outline-primary">
+                            <i class="fab fa-google"></i> Log in with Google
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts

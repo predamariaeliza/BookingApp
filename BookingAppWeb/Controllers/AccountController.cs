@@ -5,6 +5,7 @@ using BookingAppWeb.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace BookingAppWeb.Controllers
 {
@@ -13,9 +14,12 @@ namespace BookingAppWeb.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AccountController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public AccountController(IUnitOfWork unitOfWork,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
@@ -23,9 +27,67 @@ namespace BookingAppWeb.Controllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Login(string returnUrl=null)
+        // ========== EXTERNAL LOGIN GOOGLE ==========
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
         {
-            //if returnUrl !null => return contentt
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), "Account", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null, string? remoteError = null)
+        {
+            returnUrl ??= Url.Content("~/");
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError(string.Empty, $"Error from external provider: {remoteError}");
+                return RedirectToAction(nameof(Login));
+            }
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction(nameof(Login));
+
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            if (result.Succeeded)
+                return LocalRedirect(returnUrl);
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            if (email == null)
+                return RedirectToAction(nameof(Login));
+
+            var name = info.Principal.FindFirstValue(ClaimTypes.Name) ?? email;
+
+            var user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                EmailConfirmed = true,
+                CreatedAt = DateTime.Now,
+                Name = name
+            };
+
+            var createResult = await _userManager.CreateAsync(user);
+            if (createResult.Succeeded)
+            {
+                await _userManager.AddToRoleAsync(user, StaticDetails.Role_Customer);
+                await _userManager.AddLoginAsync(user, info);
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return LocalRedirect(returnUrl);
+            }
+
+            return RedirectToAction(nameof(Login));
+        }
+
+        // ========== LOGIN / LOGOUT / REGISTER ==========
+
+        public IActionResult Login(string returnUrl = null)
+        {
             returnUrl ??= Url.Content("~/");
 
             LoginVM loginVM = new()
@@ -36,37 +98,49 @@ namespace BookingAppWeb.Controllers
             return View(loginVM);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, false);
+
+                if (result.Succeeded)
+                {
+                    var user = await _userManager.FindByEmailAsync(loginVM.Email);
+                    if (await _userManager.IsInRoleAsync(user, StaticDetails.Role_Admin))
+                        return RedirectToAction("Index", "Dashboard");
+
+                    return LocalRedirect(loginVM.RedirectUrl ?? Url.Content("~/"));
+                }
+
+                ModelState.AddModelError("", "Invalid login credentials.");
+            }
+
+            return View(loginVM);
+        }
+
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
-        public IActionResult AccessDenied()
-        {
-            return View();
-        }
-
-        public IActionResult Register (string returnUrl = null)
+        public IActionResult Register(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            if (!_roleManager.RoleExistsAsync(StaticDetails.Role_Admin).GetAwaiter().GetResult())
+
+            if (!_roleManager.RoleExistsAsync(StaticDetails.Role_Admin).Result)
             {
-                // .Wait() asteapta ca task-ul sa fie complet executat
-                // .Wait() => inlocuitor pentru async & await
                 _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_Admin)).Wait();
                 _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_Customer)).Wait();
-                _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_PropertyOwner)).Wait(); 
+                _roleManager.CreateAsync(new IdentityRole(StaticDetails.Role_PropertyOwner)).Wait();
             }
 
             RegisterVM registerVM = new()
             {
-                RoleList = _roleManager.Roles.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Name
-                }),
-                RedirectUrl = returnUrl,
+                RoleList = _roleManager.Roles.Select(r => new SelectListItem { Text = r.Name, Value = r.Name }),
+                RedirectUrl = returnUrl
             };
 
             return View(registerVM);
@@ -82,113 +156,31 @@ namespace BookingAppWeb.Controllers
                     Name = registerVM.Name,
                     Email = registerVM.Email,
                     PhoneNumber = registerVM.PhoneNumber,
+                    UserName = registerVM.Email,
                     NormalizedEmail = registerVM.Email.ToUpper(),
                     EmailConfirmed = true,
-                    UserName = registerVM.Email,
-                    CreatedAt = DateTime.Now,
+                    CreatedAt = DateTime.Now
                 };
 
                 var result = await _userManager.CreateAsync(user, registerVM.Password);
-
-                // daca rezultatul este un succes
                 if (result.Succeeded)
                 {
-                    // ADAUGARE/ASIGNARE ROL USER
-                    // daca exista cel putin un rol selectat
-                    if (!string.IsNullOrEmpty(registerVM.Role))
-                    {
-                        // se adauga un singur rol -> AddToRolesAsync pt mai multe roluri
-                        await _userManager.AddToRoleAsync(user, registerVM.Role);
-                    }
-                    // daca nu exista niciun rol selectat, userul primeste automat rolul de Customer
-                    else
-                    {
-                        await _userManager.AddToRoleAsync(user, StaticDetails.Role_Customer);
-                    }
-
-                    // isPersistent:false - sign in the user in mod automat
+                    await _userManager.AddToRoleAsync(user, registerVM.Role ?? StaticDetails.Role_Customer);
                     await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    // redirectionam catre:
-                    if (string.IsNullOrEmpty(registerVM.RedirectUrl))
-                    {
-                        // pagina de Home - daca nu exista redirectURL
-                        return RedirectToAction("Index", "Home");
-                    }
-                    else
-                    {
-                        // Url - ul Redirectionat - daca exista redirectURL
-                        // LocalRedirect -> redirectionam mereu catre domeniul local
-                        // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
-                        // * (security measure)
-                        return LocalRedirect(registerVM.RedirectUrl);
-                    }
-
+                    return LocalRedirect(registerVM.RedirectUrl ?? Url.Content("~/"));
                 }
 
-                // daca rezultatul nu este un succes
-                // afisam eroarea
                 foreach (var error in result.Errors)
-                {
-                    // nu adaugam KEY, se va afisa eroarea de pe UI (asp-validation-summary = "ModelOnly" class = "text-danger")
                     ModelState.AddModelError("", error.Description);
-                }
             }
-            // populam lista row
-            registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem
-            {
-                Text = x.Name,
-                Value = x.Name
-            });
-        
+
+            registerVM.RoleList = _roleManager.Roles.Select(r => new SelectListItem { Text = r.Name, Value = r.Name });
             return View(registerVM);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginVM loginVM)
+        public IActionResult AccessDenied()
         {
-            if(ModelState.IsValid)
-            {
-                // verificare User & Parola
-                var result = await _signInManager
-                    .PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, lockoutOnFailure:false);
-
-                // daca rezultatul este un succes
-                if (result.Succeeded)
-                {
-                    var user = await _userManager.FindByEmailAsync(loginVM.Email);
-                    if (await _userManager.IsInRoleAsync(user, StaticDetails.Role_Admin))
-                    {
-                        return RedirectToAction("Index", "Dashboard");
-                    }
-                    else
-                    {
-                        // redirectionam catre:
-                        if (string.IsNullOrEmpty(loginVM.RedirectUrl))
-                        {
-                            // pagina de Home - daca nu exista redirectURL
-                            return RedirectToAction("Index", "Home");
-                        }
-                        else
-                        {
-                            // Url - ul Redirectionat - daca exista redirectURL
-                            // LocalRedirect -> redirectionam mereu catre domeniul local
-                            // * nu punem direct link-ul pentru a nu redirectiona catre site-uri malitioase
-                            // * (security measure)
-                            return LocalRedirect(loginVM.RedirectUrl);
-                        }
-                    }
-
-                }
-                // daca rezultatul nu este un succes
-                // => nu vrem sa aratam utilizatorului eroarea
-                else
-                {
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                }
-            }
-
-            return View(loginVM);
+            return View();
         }
     }
 }

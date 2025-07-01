@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace BookingAppWeb.Controllers
 {
     //if a user want's to access this logic, it needs to log in first
-    [Authorize(Roles = StaticDetails.Role_PropertyOwner)]
+    //[Authorize(Roles = StaticDetails.Role_PropertyOwner)]
+    [Authorize(Roles = StaticDetails.Role_Admin)]
     public class AmenityController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -7,7 +7,7 @@ namespace BookingAppWeb.ViewModels
     public class RegisterVM
     {
         [Required]
-        public string Email { get; set; }
+        public string Email { get; set; } = default!;
 
         [Required]
         [DataType(DataType.Password)]
